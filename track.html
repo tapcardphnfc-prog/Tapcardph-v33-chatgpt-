@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002348">
+<title>Track Your Order — Tapcard PH</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
+:root{--navy:#002348;--navy2:#07345f;--gold:#d4af37;--gold2:#f1d979;--cream:#f7f3e8;--paper:#fbfcfd;--ink:#102238;--muted:#66758a;--line:#e1e6eb;--white:#fff;--success:#176b4d;--warn:#a15b00;--danger:#a1272b;--shadow:0 18px 55px rgba(0,35,72,.10);--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none}
+button,input,textarea{font:inherit;touch-action:manipulation}button{cursor:pointer}.hidden{display:none!important}img{max-width:100%;height:auto}
+
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,64px);background:rgba(251,252,253,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:11px;color:var(--navy);text-decoration:none;font-size:13px;letter-spacing:.8px}
+.brand .mark{width:42px;height:42px;border-radius:50%;background:var(--navy);color:var(--gold);display:grid;place-items:center;font:11px "DM Mono";font-weight:700}
+.brand b{font-weight:700}
+.nav-link{border:0;background:transparent;padding:10px 14px;color:var(--muted);font-weight:600;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;font-size:13px}
+.nav-link:hover{color:var(--navy);background:var(--cream)}
+
+main{max-width:760px;margin:auto;padding:40px clamp(16px,4vw,32px) 80px}
+
+.lookup-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;text-align:center}
+.lookup-card h1{margin:0 0 8px;font-size:24px}
+.lookup-card p{margin:0 0 22px;color:var(--muted);font-size:13px;line-height:1.6}
+.token-form{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.token-form input{flex:1;min-width:220px;padding:13px 15px;border:1px solid var(--line);border-radius:10px;font-size:13px}
+.token-form button{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:13px 20px;font-weight:700;font-size:13px}
+.token-form button:hover{background:var(--navy2)}
+
+.order-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-top:20px}
+.order-head{background:var(--navy);color:#fff;padding:26px 28px}
+.order-head .eyebrow{font:10px "DM Mono";letter-spacing:2px;color:var(--gold2);text-transform:uppercase;margin:0 0 6px}
+.order-head h2{margin:0;font-size:22px}
+.status-pill{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.12);font:11px "DM Mono";letter-spacing:.5px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+
+.order-body{padding:26px 28px}
+.section-label{font:10px "DM Mono";letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.detail-grid div{font-size:13px}
+.detail-grid b{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-bottom:3px;letter-spacing:.4px}
+.items-list{border-top:1px solid var(--line);padding-top:16px;margin-bottom:20px}
+.item-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0}
+.item-row span{color:var(--muted)}
+.totals-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0}
+.totals-row.grand{font-size:16px;font-weight:700;color:var(--navy);border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
+
+.pay-box{background:var(--cream);border-radius:14px;padding:18px 20px;margin-bottom:20px}
+.pay-box h3{margin:0 0 6px;font-size:14px}
+.pay-box p{margin:0 0 14px;font-size:12px;color:var(--muted);line-height:1.6}
+.pay-box .ref-form{display:flex;gap:8px;flex-wrap:wrap}
+.pay-box input{flex:1;min-width:160px;padding:11px 13px;border:1px solid var(--line);border-radius:9px;font-size:12px}
+.pay-box button{background:var(--navy);color:#fff;border:0;border-radius:9px;padding:11px 16px;font-weight:700;font-size:12px}
+
+.msg-thread{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.msg-list{max-height:240px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--paper)}
+.msg{max-width:80%;padding:9px 12px;border-radius:12px;font-size:12px;line-height:1.5}
+.msg.customer{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:3px}
+.msg.owner{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:3px}
+.msg small{display:block;opacity:.65;font-size:9px;margin-top:4px}
+.msg-empty{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+.msg-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
+.msg-form input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:12px}
+.msg-form button{background:var(--navy);color:#fff;border:0;border-radius:9px;padding:10px 14px;font-weight:700;font-size:12px}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:999px;font-size:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;z-index:80}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+
+.error-note{color:var(--danger);font-size:12px;margin-top:10px}
+
+/* Screenshot upload */
+.upload-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.upload-btn{background:#fff;border:1px dashed var(--line);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.upload-btn:hover{border-color:var(--gold);color:var(--navy)}
+.shot-preview{position:relative;display:inline-block}
+.shot-preview img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.shot-preview button{position:absolute;top:-6px;right:-6px;background:var(--danger);color:#fff;border:0;border-radius:50%;width:20px;height:20px;font-size:12px;line-height:1;cursor:pointer}
+.amount-input{max-width:160px!important}
+.existing-shot{margin-top:10px}
+.existing-shot img{max-width:180px;border-radius:10px;border:1px solid var(--line);cursor:zoom-in}
+.lightbox{position:fixed;inset:0;background:rgba(0,10,20,.85);z-index:300;display:grid;place-items:center;padding:20px}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:10px}
+.lightbox button{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer}
+
+/* My Orders (device history) */
+.myorders-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--navy);font-weight:600;text-decoration:none;background:var(--cream);padding:9px 14px;border-radius:999px;border:1px solid rgba(212,175,55,.4)}
+.myorders-link:hover{background:#f1ead2}
+.history-list{display:grid;gap:10px;margin-top:16px}
+.history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit}
+.history-item:hover{border-color:var(--gold)}
+.history-item .h-left b{display:block;font-size:13px;color:var(--navy)}
+.history-item .h-left span{font-size:11px;color:var(--muted)}
+.history-item .h-right{text-align:right}
+.history-item .h-right b{display:block;font-size:13px}
+.history-empty{text-align:center;color:var(--muted);font-size:12px;padding:24px}
+
+@media(max-width:650px){
+  .topbar{height:62px;padding:0 14px}
+  main{padding:24px 14px 60px}
+  .lookup-card{padding:24px 18px}
+  .lookup-card h1{font-size:20px}
+  .token-form{flex-direction:column}
+  .token-form input,.token-form button{width:100%}
+  .order-head{padding:20px 18px}
+  .order-head h2{font-size:19px}
+  .order-body{padding:20px 18px}
+  .detail-grid{grid-template-columns:1fr;gap:10px}
+  .pay-box{padding:16px 14px}
+  .pay-box .ref-form{flex-direction:column}
+  .pay-box input,.pay-box button{width:100%}
+}
+</style>
+
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="mark">TC</span>
+    <b>TAPCARD PH</b>
+  </a>
+  <a class="nav-link" href="index.html">← Back to Shop</a>
+</header>
+
+<main>
+
+  <!-- Token lookup (shown when no valid token in URL) -->
+  <div class="lookup-card" id="lookupCard">
+    <h1>Track Your Order</h1>
+    <p>Paste your private tracking link or tracking code below to check your order status, payment instructions, and chat with the owner.</p>
+    <form class="token-form" id="lookupForm">
+      <input id="lookupInput" placeholder="tc_track_xxxxxxxxxxxxxxxx" autocomplete="off" required>
+      <button type="submit">Track Order</button>
+    </form>
+    <p class="error-note hidden" id="lookupError">We couldn't find an order with that tracking code. Please check the link from your order confirmation and try again.</p>
+    <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--line)">
+      <button type="button" class="myorders-link" id="toggleHistoryBtn" onclick="toggleHistory()">🕓 View my past orders on this device</button>
+    </div>
+  </div>
+
+  <!-- Device order history (no login needed — tied to this browser) -->
+  <div class="lookup-card hidden" id="historyCard" style="text-align:left;margin-top:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <h1 style="font-size:18px;margin:0">My Past Orders</h1>
+      <button type="button" onclick="toggleHistory()" style="background:transparent;border:0;color:var(--muted);font-size:13px;cursor:pointer">Close</button>
+    </div>
+    <p style="margin:0 0 4px;color:var(--muted);font-size:12px">Orders placed from this device/browser. Clearing your browser data will remove this history — your tracking links still work if saved separately.</p>
+    <div class="history-list" id="historyList"><div class="history-empty">Loading…</div></div>
+  </div>
+
+  <!-- Order details (shown when a valid token resolves) -->
+  <div class="order-card hidden" id="orderCard">
+    <div class="order-head">
+      <p class="eyebrow">TAPCARD PH — ORDER TRACKING</p>
+      <h2 id="orderNumber">Order #TC-000000</h2>
+      <span class="status-pill"><span class="status-dot"></span><span id="orderStatus">Pending Payment</span></span>
+    </div>
+
+    <div class="order-body">
+      <p class="section-label">Delivery Details</p>
+      <div class="detail-grid">
+        <div><b>Name</b><span id="custName"></span></div>
+        <div><b>Mobile Number</b><span id="custPhone"></span></div>
+        <div style="grid-column:1/-1"><b>Delivery / Business Address</b><span id="custAddress"></span></div>
+      </div>
+
+      <p class="section-label">Order Items</p>
+      <div class="items-list" id="itemsList"></div>
+      <div class="totals-row"><span>Subtotal</span><span id="rowSubtotal"></span></div>
+      <div class="totals-row"><span>Service Fee</span><span id="rowFee"></span></div>
+      <div class="totals-row"><span>Delivery Fee</span><span id="rowDelivery"></span></div>
+      <div class="totals-row grand"><span>Total</span><span id="rowTotal"></span></div>
+
+      <div class="pay-box" style="margin-top:22px">
+        <h3>Payment Instructions</h3>
+        <p id="payMethodText">Please pay via your selected method, then submit your payment reference number below so the owner can verify it.</p>
+        <div id="payAccountBox" class="hidden" style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 14px">
+          <p style="margin:0 0 4px;font-size:10px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase">Send payment to</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <p style="margin:0;font-size:15px;font-weight:700;color:var(--navy)" id="payAccountNumber">—</p>
+            <button type="button" id="payAccountCopyBtn" onclick="tcCopyTrackAccount()" style="display:none;flex:none;border:1px solid var(--gold,#d4af37);background:#fff;color:var(--navy);font:700 11px 'DM Mono';letter-spacing:.3px;border-radius:8px;padding:7px 12px;white-space:nowrap">Copy</button>
+          </div>
+          <p style="margin:2px 0 0;font-size:11px;color:var(--muted)" id="payAccountName"></p>
+        </div>
+        <p id="payMethodNote" style="font-size:11px;color:var(--muted);margin:-6px 0 14px;line-height:1.5">
+          <b>Manual payment:</b> Copy the account number above, send the payment using your banking app, then enter the payment reference number below.
+        </p>
+        <form id="refForm">
+          <label style="display:grid;gap:5px;margin-bottom:10px">
+            <span id="refLabel" style="font:10px 'DM Mono';text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Payment Reference Number</span>
+            <input id="refInput" placeholder="e.g. 0123456789012" autocomplete="off" required>
+          </label>
+          <label style="display:grid;gap:5px;margin-bottom:10px">
+            <span style="font:10px 'DM Mono';text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Amount You Sent (₱)</span>
+            <input id="amountInput" class="amount-input" type="number" min="0" step="0.01" placeholder="0.00" autocomplete="off">
+          </label>
+          <button type="submit">Submit Payment Details</button>
+        </form>
+      </div>
+
+      <p class="section-label">Chat With Owner</p>
+      <div class="msg-thread">
+        <div class="msg-list" id="msgList"></div>
+        <form class="msg-form" id="msgForm">
+          <input id="msgInput" placeholder="Type a message…" autocomplete="off" required>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js?v=10.0"></script>
+<script src="auth-core.js?v=9.1"></script>
+<script>
+const peso = n => '₱' + Number(n || 0).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const fmtDate = iso => { try { return new Date(iso).toLocaleString('en-PH', {dateStyle:'medium', timeStyle:'short'}); } catch(e){ return ''; } };
+
+let currentToken = null;
+let currentOrder = null;
+
+let trackCopyValue = ''; // raw account number currently shown, for the Copy button
+function showPaymentAccount(method) {
+  const box = document.getElementById('payAccountBox');
+  const copyBtn = document.getElementById('payAccountCopyBtn');
+  const match = (window.TAPCARD_PAYMENT_FALLBACKS || {})[String(method || '').toLowerCase()] || null;
+
+  if (!match) {
+    box.classList.add('hidden');
+    copyBtn.style.display = 'none';
+    trackCopyValue = '';
+    return;
+  }
+
+  document.getElementById('payAccountNumber').textContent = `${match.channel}: ${match.account_number}`;
+  document.getElementById('payAccountName').textContent = match.account_name ? `Account name: ${match.account_name}` : '';
+  trackCopyValue = match.account_number;
+  copyBtn.style.display = '';
+  copyBtn.textContent = 'Copy';
+  box.classList.remove('hidden');
+}
+
+// type="button" already prevents this from submitting the payment-reference form;
+// this is a second guard.
+function tcCopyTrackAccount() {
+  if (!trackCopyValue) return;
+  const btn = document.getElementById('payAccountCopyBtn');
+  window.tcCopyText(trackCopyValue, (ok) => {
+    btn.textContent = ok ? 'Copied!' : 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+}
+
+function renderOrder(order, items, messages) {
+  currentOrder = order;
+  document.getElementById('lookupCard').classList.add('hidden');
+  document.getElementById('historyCard').classList.add('hidden');
+  document.getElementById('orderCard').classList.remove('hidden');
+
+  document.getElementById('orderNumber').textContent = `Order #${order.order_number}`;
+  document.getElementById('orderStatus').textContent = order.status || 'Pending Payment';
+
+  document.getElementById('custName').textContent = order.customer_name || '—';
+  document.getElementById('custPhone').textContent = order.customer_phone || '—';
+  document.getElementById('custAddress').textContent = order.customer_address || '—';
+
+  const itemsList = document.getElementById('itemsList');
+  itemsList.innerHTML = (items || []).map(i =>
+    `<div class="item-row"><span>${i.qty} pcs × ${i.product_name}${i.format ? ` <small style="color:var(--muted)">(${i.format})</small>` : ''}</span><span>${peso(i.item_total)}</span></div>`
+  ).join('') || '<div class="item-row"><span>No items on record</span></div>';
+
+  document.getElementById('rowSubtotal').textContent = peso(order.subtotal);
+  document.getElementById('rowFee').textContent = peso(order.fee);
+  document.getElementById('rowDelivery').textContent = peso(order.delivery_fee);
+  document.getElementById('rowTotal').textContent = peso(order.total);
+
+  document.getElementById('payMethodText').textContent = order.payment_method === 'Pay Personal'
+    ? `You chose to pay in person. The owner will contact you to arrange payment — no online reference needed, but you're welcome to add a note below once settled.`
+    : `Please pay via ${order.payment_method || 'your selected method'}, then submit your payment reference number below so the owner can verify it.` +
+      (order.payment_reference ? ` Reference on file: ${order.payment_reference} (${order.payment_status}).` : '');
+  document.getElementById('refLabel').textContent = `${order.payment_method || 'Payment'} Reference Number`;
+
+  // "Pay Personal" doesn't need an online reference number/screenshot — relax the requirement
+  const refInputEl = document.getElementById('refInput');
+  refInputEl.required = true;
+
+  // Show the actual GCash/bank account to pay, if this order's method has one on file
+  showPaymentAccount(order.payment_method);
+
+  if (order.payment_amount_claimed !== null && order.payment_amount_claimed !== undefined) {
+    document.getElementById('amountInput').value = order.payment_amount_claimed;
+  }
+
+  renderMessages(messages || []);
+}
+
+function renderMessages(messages) {
+  const list = document.getElementById('msgList');
+  if (!messages.length) {
+    list.innerHTML = '<div class="msg-empty">No messages yet. Send a note to the owner below.</div>';
+  } else {
+    list.innerHTML = messages.map(m =>
+      `<div class="msg ${m.sender_role === 'customer' ? 'customer' : 'owner'}">${escapeHtml(m.message)}<small>${m.sender_name || (m.sender_role === 'customer' ? 'You' : 'Owner')} · ${fmtDate(m.created_at)}</small></div>`
+    ).join('');
+  }
+  list.scrollTop = list.scrollHeight;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function loadByToken(token) {
+  try {
+    const data = await window.tcApi(`/api/orders/track/${encodeURIComponent(token)}`);
+    document.getElementById('lookupError').classList.add('hidden');
+    currentToken = token;
+    renderOrder(data.order, data.items, data.messages);
+    // Reflect the token in the URL without reloading, so the link stays shareable
+    const url = new URL(window.location);
+    url.searchParams.set('token', token);
+    window.history.replaceState({}, '', url);
+    return true;
+  } catch (err) {
+    document.getElementById('lookupError').classList.remove('hidden');
+    return false;
+  }
+}
+
+document.getElementById('lookupForm').onsubmit = (e) => {
+  e.preventDefault();
+  const val = document.getElementById('lookupInput').value.trim();
+  if (val) loadByToken(val);
+};
+
+document.getElementById('refForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const ref = document.getElementById('refInput').value.trim();
+  const amount = document.getElementById('amountInput').value;
+  if (!ref || !currentToken) return;
+
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  try {
+    await window.tcApi(`/api/orders/track/${encodeURIComponent(currentToken)}/payment`, {
+      method: 'POST',
+      body: JSON.stringify({
+        referenceNumber: ref,
+        amountPaid: amount || null
+      })
+    });
+
+    // Web3Forms backup notification — additional to the server's own Gmail alert,
+    // fired only after the reference above has already been accepted and stored.
+    window.tcNotifyWeb3Forms({
+      subject: `Payment Reference Submitted — Order #${currentOrder?.order_number || currentToken}`,
+      order_number: currentOrder?.order_number || 'Unknown',
+      payment_method: currentOrder?.payment_method || 'Unknown',
+      payment_reference: ref,
+      amount_claimed: amount ? peso(Number(amount)) : 'Not specified',
+      order_total: currentOrder ? peso(currentOrder.total) : 'Unknown',
+      customer_name: currentOrder?.customer_name || 'Unknown',
+      customer_phone: currentOrder?.customer_phone || 'Not provided',
+      submitted_at: new Date().toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' })
+    });
+
+    toast('Payment details submitted!');
+    await loadByToken(currentToken);
+  } catch (err) {
+    toast(err.message || 'Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = originalText;
+  }
+};
+
+document.getElementById('msgForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const text = document.getElementById('msgInput').value.trim();
+  if (!text || !currentToken) return;
+  try {
+    await window.tcApi(`/api/orders/track/${encodeURIComponent(currentToken)}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ message: text })
+    });
+    document.getElementById('msgInput').value = '';
+    await loadByToken(currentToken);
+  } catch (err) {
+    toast(err.message || 'Message failed to send. Please try again.');
+  }
+};
+
+// On load: auto-lookup if a token is present in the URL
+(function init() {
+  const token = getTokenFromUrl();
+  if (token) {
+    document.getElementById('lookupInput').value = token;
+    loadByToken(token);
+  }
+})();
+</script>
+</body>
+</html>

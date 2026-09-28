@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owner Login — Tapcard PH NFC</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--navy:#002348;--navy2:#07345f;--gold:#d4af37;--gold2:#f1d979;--cream:#f7f3e8;--paper:#fbfcfd;--ink:#102238;--muted:#66758a;--line:#e1e6eb;--danger:#c92a2a;--success:#176b4d;--shadow:0 25px 65px rgba(0,35,72,.18)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top center,#062b50 0%,#00142a 100%);color:var(--ink);font-family:"DM Sans",sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px}
+.login-card{width:min(440px,100%);background:#fff;border-radius:24px;padding:40px 32px;box-shadow:var(--shadow);border:1px solid rgba(212,175,55,.3);position:relative}
+@media(max-width:480px){
+  body{padding:0;align-items:flex-end}
+  .login-card{border-radius:22px 22px 0 0;padding:28px 20px;width:100%;max-height:96vh;overflow-y:auto}
+}
+@media(max-width:360px){
+  h1{font-size:20px}
+  .primary{padding:11px}
+}
+.brand-badge{display:flex;align-items:center;gap:10px;margin-bottom:24px;color:var(--navy);font:12px "DM Mono";letter-spacing:1px}
+.brand-badge span{background:var(--gold);color:var(--navy);font-weight:700;padding:4px 8px;border-radius:6px}
+h1{margin:0 0 6px;font-size:24px;letter-spacing:-.8px;color:var(--navy)}
+p.sub{margin:0 0 24px;font-size:12px;color:var(--muted);line-height:1.55}
+label{display:grid;gap:6px;margin-bottom:16px}
+label span{font:10px "DM Mono";text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.input-wrap{position:relative;display:flex;align-items:center}
+input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:13px;outline:0;font-family:inherit;color:var(--ink)}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.15)}
+.toggle-btn{position:absolute;right:10px;background:transparent;border:0;cursor:pointer;color:var(--muted);font-size:16px;padding:6px;display:grid;place-items:center}
+.toggle-btn:hover{color:var(--navy)}
+.primary{width:100%;background:var(--gold);color:var(--navy);border:0;border-radius:11px;padding:13px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;margin-top:6px}
+.primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.alert-error{background:#fdf0f0;border-left:4px solid var(--danger);padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:16px;border-radius:0 8px 8px 0}
+.notice{background:var(--cream);border-radius:10px;padding:12px;font-size:11px;color:var(--muted);line-height:1.5;margin-top:20px;text-align:center}
+.notice a{color:var(--navy);font-weight:700;text-decoration:none}
+.notice a:hover{text-decoration:underline}
+.hidden{display:none!important}
+.code-input{letter-spacing:8px;font-size:24px;text-align:center;font-weight:700;font-family:"DM Mono",monospace}
+.two-factor-banner{background:#eef6fc;border-left:4px solid #1a73e8;padding:12px;border-radius:0 8px 8px 0;font-size:11px;color:#174ea6;line-height:1.5;margin-bottom:18px}
+.back-link{background:transparent;border:0;color:var(--muted);font-size:11px;cursor:pointer;padding:6px;display:block;margin:12px auto 0}
+.back-link:hover{color:var(--navy);text-decoration:underline}
+</style>
+<script src="config.js?v=10.0"></script>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="brand-badge">
+    <span>NFC</span> TAPCARD PH • OWNER PORTAL
+  </div>
+
+  <div id="errorMessage" class="alert-error hidden"></div>
+
+  <!-- STEP 1: Email & Password -->
+  <div id="loginStep1">
+    <h1>Owner Authentication</h1>
+    <p class="sub">Protected administrative entrance. Strictly restricted to the authorized business owner.</p>
+
+    <form id="ownerLoginForm">
+      <label>
+        <span>Owner Email</span>
+        <input id="loginEmail" type="email" required placeholder="owner@tapcardph.com" autocomplete="email">
+      </label>
+
+      <label>
+        <span>Password</span>
+        <div class="input-wrap">
+          <input id="loginPassword" type="password" required placeholder="Enter your password" autocomplete="current-password">
+          <button type="button" class="toggle-btn" onclick="togglePass('loginPassword', this)" title="Show/Hide Password">👁</button>
+        </div>
+      </label>
+
+      <div style="display:flex;justify-content:flex-end;margin:-8px 0 16px">
+        <a href="forgot-password.html" style="font-size:11px;color:var(--muted);text-decoration:none">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="primary">Verify Password →</button>
+    </form>
+
+    <div class="notice">
+      Need to configure your account or Google 2FA? <br>
+      <a href="setup-2fa.html">Initialize Owner 2FA Setup →</a>
+    </div>
+  </div>
+
+  <!-- STEP 2: Google Authenticator 2FA Challenge -->
+  <div id="loginStep2" class="hidden">
+    <h1>Security Verification</h1>
+    <p class="sub">Enter the 6-digit verification code from your Google Authenticator app for account: <b id="twoFactorAccount"></b></p>
+
+    <div class="two-factor-banner">
+      🛡️ <b>Two-Factor Authentication Enforced</b><br>
+      Open your mobile authenticator app and enter the live 6-digit code.
+    </div>
+
+    <form id="twoFactorForm">
+      <label>
+        <span>6-Digit Verification Code</span>
+        <input id="twoFactorCode" class="code-input" type="text" maxlength="6" pattern="[0-9]{6}" required placeholder="000000" autocomplete="one-time-code">
+      </label>
+
+      <button type="submit" class="primary">Verify & Enter Dashboard →</button>
+      <button type="button" class="back-link" onclick="backToStep1()">← Use different credentials</button>
+    </form>
+  </div>
+</div>
+
+<script>
+let verifiedEmail = '';
+let verifiedPassword = '';
+
+function togglePass(id, btn) {
+  const el = document.getElementById(id);
+  if (el.type === 'password') {
+    el.type = 'text';
+    btn.textContent = '🔒';
+  } else {
+    el.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMessage');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function clearError() {
+  document.getElementById('errorMessage').classList.add('hidden');
+}
+
+function backToStep1() {
+  clearError();
+  document.getElementById('loginStep2').classList.add('hidden');
+  document.getElementById('loginStep1').classList.remove('hidden');
+}
+
+// Redirect if already logged in (checked server-side via the session cookie)
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await window.tcApi('/api/admin/analytics');
+    window.location.href = 'admin.html';
+  } catch (e) { /* not logged in — stay on this page */ }
+});
+
+// Step 1: Validate Email + Password against the real backend
+document.getElementById('ownerLoginForm').onsubmit = async (e) => {
+  e.preventDefault();
+  clearError();
+
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password = document.getElementById('loginPassword').value;
+
+  try {
+    await window.tcApi('/api/auth/owner/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+  } catch (err) {
+    showError(err.message || 'Access Denied: Invalid Owner credentials.');
+    return;
+  }
+
+  // Password Validated -> Require 2FA
+  verifiedEmail = email;
+  verifiedPassword = password;
+
+  document.getElementById('twoFactorAccount').textContent = email;
+  document.getElementById('loginStep1').classList.add('hidden');
+  document.getElementById('loginStep2').classList.remove('hidden');
+  document.getElementById('twoFactorCode').focus();
+};
+
+// Step 2: Validate Google Authenticator TOTP against the real backend (issues the session cookie)
+document.getElementById('twoFactorForm').onsubmit = async (e) => {
+  e.preventDefault();
+  clearError();
+
+  const code = document.getElementById('twoFactorCode').value.trim();
+
+  try {
+    await window.tcApi('/api/auth/owner/verify-2fa', {
+      method: 'POST',
+      body: JSON.stringify({ email: verifiedEmail, password: verifiedPassword, totpCode: code })
+    });
+  } catch (err) {
+    showError(err.message || 'Invalid 2FA code. Please check Google Authenticator on your phone.');
+    return;
+  }
+
+  // Forward to Owner Dashboard
+  window.location.href = 'admin.html';
+};
+</script>
+</body>
+</html>

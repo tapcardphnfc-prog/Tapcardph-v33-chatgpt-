@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Replace with your real Owner Firebase Auth UID
+    function isOwner() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'owner@tapcardph.com' ||
+        request.auth.uid == 'OWNER_FIREBASE_UID_HERE'
+      );
+    }
+
+    // 1. Orders Collection: Strict Customer Isolation & Owner Super-Admin Access
+    match /orders/{orderId} {
+      // Any public customer can create an order with initial 'Pending Payment' status
+      allow create: if request.resource.data.status == 'Pending Payment'
+                    && request.resource.data.trackingToken is string
+                    && request.resource.data.customerName is string;
+
+      // Customer can read ONLY their own order if they provide matching trackingToken header/query
+      // Owner can read ALL orders
+      allow read: if isOwner() || (
+        resource.data.trackingToken == request.auth.token.trackingToken ||
+        resource.data.trackingToken == request.headers.trackingToken
+      );
+
+      // Customer can only update payment reference or customer message
+      // Owner can update all fields (lifecycle status, verification, notes)
+      allow update: if isOwner() || (
+        resource.data.trackingToken == request.headers.trackingToken
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['paymentReference', 'status', 'updatedAt'])
+        && request.resource.data.status in ['Payment Submitted', 'Pending Payment']
+      );
+
+      // Only Owner can delete orders
+      allow delete: if isOwner();
+
+      // Messages sub-collection
+      match /messages/{messageId} {
+        allow read: if isOwner() || resource.data.trackingToken == request.headers.trackingToken;
+        allow create: if isOwner() || request.resource.data.senderRole == 'customer';
+        allow update, delete: if isOwner();
+      }
+    }
+
+    // 2. Business Analytics & Financial Records (OWNER ONLY)
+    match /analytics/{doc} {
+      allow read, write: if isOwner();
+    }
+
+    // 3. System Settings & Audit Logs (OWNER ONLY)
+    match /settings/{doc} {
+      allow read, write: if isOwner();
+    }
+    match /audit_logs/{doc} {
+      allow read, write: if isOwner();
+    }
+
+    // 4. Products Catalog
+    match /products/{productId} {
+      allow read: if true; // Public read
+      allow write: if isOwner(); // Owner only edit
+    }
+  }
+}

@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#002348">
+<title>Tapcard PH NFC — Tap. Connect. Grow.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
+:root{--navy:#002348;--navy2:#07345f;--gold:#d4af37;--gold2:#f1d979;--cream:#f7f3e8;--paper:#fbfcfd;--ink:#102238;--muted:#66758a;--line:#e1e6eb;--white:#fff;--success:#176b4d;--shadow:0 18px 55px rgba(0,35,72,.10);--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none}button,input,textarea{font:inherit;touch-action:manipulation}button{cursor:pointer}img{max-width:100%;height:auto}.hidden{display:none!important}.product{content-visibility:auto;contain-intrinsic-size:1px 420px}
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,64px);background:rgba(251,252,253,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:11px;color:var(--navy);text-decoration:none;font-size:13px;letter-spacing:.8px}.brand img{width:42px;height:42px;border-radius:50%;object-fit:cover}.brand b{font-weight:700}.nav-right{display:flex;align-items:center;gap:10px} .order-nav-btn{border:1px solid var(--gold);background:var(--gold);color:var(--navy);padding:10px 14px;border-radius:10px;font-weight:800;font-size:12px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}.order-nav-btn:hover{background:var(--gold2)}.order-nav-count{min-width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font:10px "DM Mono"}.review-list{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.review-row{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:11px;border-bottom:1px solid var(--line)}.review-row:last-child{border-bottom:0}.review-thumb{width:48px;height:48px;border-radius:9px;background:var(--navy);overflow:hidden;display:grid;place-items:center;color:var(--gold);font:9px "DM Mono"}.review-thumb img{width:100%;height:100%;object-fit:cover}.review-actions{display:flex;align-items:center;gap:5px;margin-top:5px}.review-actions button{width:26px;height:26px;border:1px solid var(--line);background:#fff;border-radius:6px}.terms-box{margin-top:14px;border:1px solid #e5d59a;background:#fffdf4;border-radius:12px;padding:13px}.terms-box label{display:flex!important;grid-template:none!important;gap:9px;align-items:flex-start;cursor:pointer}.terms-box input{width:18px!important;flex:none!important;margin-top:2px}.terms-box strong{display:block;font-size:11px;color:var(--navy);margin-bottom:4px}.terms-box p{margin:0;color:var(--muted);font-size:10px;line-height:1.55}.final-warning{margin-top:10px;padding:10px 12px;border-radius:9px;background:#fff2f0;color:#8b3b32;font-size:10px;line-height:1.5}.review-total{display:grid;grid-template-columns:1fr auto;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:11px}.review-total strong{font-size:18px;color:var(--navy)}.nav-pill{display:inline-flex;gap:8px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font:11px "DM Mono";background:#fff}.nav-link{border:0;background:transparent;padding:10px 14px;color:var(--muted);font-weight:600;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;font-size:13px}.nav-link.active,.nav-link:hover{color:var(--navy);background:var(--cream)}
+main{max-width:1440px;margin:auto;padding:0 clamp(16px,4vw,64px) 70px}
+.hero{margin:28px 0 55px;background:var(--navy);border-radius:28px;min-height:430px;display:grid;grid-template-columns:1.05fr .95fr;overflow:hidden;position:relative;box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(212,175,55,.28);border-radius:50%;right:-110px;top:-160px;pointer-events:none}
+.hero-copy{padding:clamp(34px,6vw,76px);position:relative;z-index:2;color:#fff}.eyebrow{font:10px "DM Mono";letter-spacing:1.8px;text-transform:uppercase;color:var(--gold);margin:0 0 13px}.hero h1{font-size:clamp(44px,6vw,76px);line-height:.94;margin:0 0 22px;letter-spacing:-3px}.hero h1 em{font-family:"Playfair Display";color:var(--gold2);font-weight:600}.hero-copy>p:not(.eyebrow){max-width:500px;color:#c6d1df;line-height:1.65;font-size:15px}.hero-actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}.primary,.secondary{border-radius:11px;padding:13px 18px;border:1px solid transparent;font-weight:700;font-size:13px}.primary{background:var(--gold);color:var(--navy)}.primary:hover{background:var(--gold2);transform:translateY(-1px)}.secondary{background:#fff;color:var(--navy);border-color:var(--line)}.hero-trust{display:flex;gap:20px;margin-top:25px;font:10px "DM Mono";color:#aebdcd}.hero-trust span:before{content:"✓";color:var(--gold);margin-right:6px}
+
+/* Slideshow */
+.hero-visual{position:relative;min-height:430px;background:#041427;overflow:hidden}
+.slideshow{position:absolute;inset:0;width:100%;height:100%}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .65s ease, transform .65s ease;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at center, #0e2742 0%, #031223 100%);transform:scale(1.02) translateZ(0);will-change:opacity,transform;backface-visibility:hidden}
+.slide.active{opacity:1;visibility:visible;transform:scale(1) translateZ(0);z-index:1}
+.slide img{width:100%;height:100%;object-fit:contain;padding:22px 28px;-webkit-touch-callout:none}
+.slide-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:15;background:rgba(0,35,72,.75);backdrop-filter:blur(10px);border:1px solid rgba(212,175,55,.4);color:#fff;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:22px;transition:.2s;line-height:1;user-select:none}
+.slide-nav:hover{background:var(--gold);color:var(--navy);border-color:var(--gold);transform:translateY(-50%) scale(1.08)}
+.slide-nav.prev{left:14px}
+.slide-nav.next{right:14px}
+.slide-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:15;background:rgba(0,18,36,.75);padding:6px 14px;border-radius:999px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);max-width:90%;overflow-x:auto}
+.dot{width:7px;height:7px;border-radius:50%;border:0;background:rgba(255,255,255,.35);padding:0;transition:.25s;cursor:pointer;flex-shrink:0}
+.dot.active{background:var(--gold);width:22px;border-radius:999px}
+.hero-card{position:absolute;right:8%;bottom:10%;width:155px;height:205px;border-radius:13px;background:var(--gold);box-shadow:0 25px 50px rgba(0,0,0,.35);transform:rotate(6deg);padding:18px;color:var(--navy);display:flex;flex-direction:column;justify-content:space-between;z-index:10;pointer-events:none}
+.hero-card span{font:9px "DM Mono";letter-spacing:1px}.hero-card strong{font-size:42px;line-height:1}.hero-card small{font-size:10px;line-height:1.35;max-width:105px}
+
+.section-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:20px}.section-heading h2{margin:0;font-size:30px;letter-spacing:-1px}.search{width:min(310px,100%);height:46px;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 13px;gap:9px;color:var(--muted)}.search input{border:0;outline:0;width:100%;background:transparent;color:var(--ink);font-size:13px}.categories{display:flex;gap:8px;overflow:auto;padding-bottom:5px;margin-bottom:10px}.review-note{margin:0 0 18px;color:var(--muted);font-size:10px}.review-note b{color:var(--navy)}.cat{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;padding:9px 14px;font-size:11px;white-space:nowrap}.cat.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.menu-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:30px;align-items:start}.menu-layout>*{min-width:0}.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.product{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.2s;position:relative}.product:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(0,35,72,.08)}.product-image{height:180px;background:var(--cream);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}.product-image img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease}.product:hover .product-image img{transform:scale(1.05)}.product-image .mock-card{width:105px;height:65px;background:var(--navy);border-radius:7px;box-shadow:12px 15px 25px rgba(0,0,0,.18);color:var(--gold);display:flex;align-items:end;padding:8px;font-size:8px;font-weight:700;letter-spacing:1px;transform:rotate(-8deg)}.badge{position:absolute;left:11px;top:11px;background:#fff;border-radius:999px;padding:5px 8px;font:9px "DM Mono";color:var(--navy);z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.08)}.product-body{padding:15px}.product-body h3{margin:0 0 6px;font-size:16px}.product-meta{display:flex;gap:6px;flex-wrap:wrap;margin:-3px 0 12px}.product-meta span{font:8px "DM Mono";border:1px solid var(--line);padding:4px 6px;border-radius:999px;color:var(--muted)}.product-body p{margin:0 0 13px;color:var(--muted);font-size:11px;line-height:1.5;min-height:34px}.product-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.price{font-size:17px;font-weight:700;color:var(--navy)}.price .unit{font-size:9px;font-weight:600;color:var(--muted)}.format-select{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px}.format-opt{border:1px solid var(--line);background:#fff;color:var(--muted);font:9px "DM Mono";padding:6px 8px;border-radius:7px;letter-spacing:.2px;transition:.15s}.format-opt:hover{border-color:var(--navy2)}.format-opt.active{background:var(--navy);border-color:var(--navy);color:#fff}.quote{border:1px solid var(--gold);background:#fff;color:#9c7c13;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:700}.add{border:0;background:var(--navy);color:#fff;border-radius:8px;padding:9px 11px;font-size:10px;font-weight:700}.add:hover{background:var(--navy2)}
+
+/* Cart */
+.cart{position:sticky;top:95px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 35px rgba(0,35,72,.06)}.cart-header{padding:19px;border-bottom:1px solid var(--line)}.cart-eyebrow{text-align:center;margin:0 0 8px}.cart-header-row{display:flex;justify-content:space-between;align-items:center}.cart-header h2{margin:0;font-size:20px}.count{min-width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--cream);color:var(--navy);font:11px "DM Mono"}.cart-items{padding:14px;min-height:175px}.empty{text-align:center;color:var(--muted);font-size:12px;padding:45px 10px;line-height:1.6}.empty small{font-size:10px}.cart-item{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #edf0f3}.mini{width:42px;height:42px;border-radius:9px;background:var(--navy);color:var(--gold);display:grid;place-items:center;font:9px "DM Mono";overflow:hidden}.mini img{width:100%;height:100%;object-fit:cover}.cart-item b{font-size:11px}.cart-item small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.qty{display:flex;gap:5px;align-items:center;margin-top:6px}.qty button{width:20px;height:20px;padding:0;border:1px solid var(--line);background:#fff;border-radius:5px}.cart-price{font-size:11px;font-weight:700}.cart-footer{border-top:1px solid var(--line);padding:16px}.totals{display:grid;grid-template-columns:1fr auto;gap:9px;font-size:11px;align-items:center}.totals span{color:var(--muted)}.totals strong{font-size:18px;color:var(--navy)}.cart-footer .primary{width:100%;margin-top:15px}
+.info-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:40px}.info{padding:20px;border:1px solid var(--line);background:#fff;border-radius:15px}.info b{font-size:13px}.info p{font-size:11px;color:var(--muted);line-height:1.55;margin:7px 0 0}
+
+/* Modals */
+.modal{position:fixed;inset:0;background:rgba(0,20,40,.55);backdrop-filter:blur(7px);z-index:100;display:grid;place-items:center;padding:18px}.modal-card{width:min(500px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:20px;padding:28px;position:relative;box-shadow:0 30px 90px rgba(0,0,0,.25)}.close{position:absolute;right:17px;top:14px;border:0;background:transparent;font-size:25px;color:var(--muted)}.modal-card h2{margin:0 0 8px;font-size:24px}.modal-sub{font-size:12px;color:var(--muted);line-height:1.5}.checkout-form{display:grid;gap:13px;margin-top:18px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checkout-form label{display:grid;gap:5px}
+.checkout-form label span{font:9px "DM Mono";text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.checkout-form input,.checkout-form textarea,.checkout-form select{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;outline:0;font-size:12px;color:var(--ink);resize:vertical}
+.checkout-form input:focus,.checkout-form textarea:focus,.checkout-form select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+.order-preview{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--cream);padding:12px;border-radius:11px}
+.order-preview div{display:flex;flex-direction:column;gap:4px}.order-preview span{font:9px "DM Mono";color:var(--muted)}.order-preview b{font-size:12px;color:var(--navy)}
+
+/* Payment Options */
+.payment-options{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}
+.checkout-form .payment-opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;display:flex!important;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--navy);transition:.2s;min-height:44px}
+.checkout-form .payment-opt:hover,.checkout-form .payment-opt.active{border-color:var(--gold);background:#fffdf7}
+.checkout-form .payment-opt input{width:auto!important;flex:none;margin:0}
+
+/* Confirmation Modal */
+.confirm-box{text-align:center;padding:10px 0}
+.confirm-icon{width:56px;height:56px;border-radius:50%;background:#eaf8ef;color:var(--success);display:grid;place-items:center;font-size:26px;margin:0 auto 16px}
+.token-card{background:var(--cream);border-radius:12px;padding:16px;margin:20px 0;text-align:left}
+.token-card b{font-size:13px;display:block;margin-bottom:4px;color:var(--navy)}
+.token-card p{font-size:11px;color:var(--muted);margin:0 0 10px;line-height:1.4}
+.token-link-box{display:flex;gap:8px}
+.token-link-box input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:11px "DM Mono";background:#fff;color:var(--navy)}
+.btn-copy{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700}
+
+/* Footer & Discrete Owner Link */
+footer{border-top:1px solid var(--line);padding:30px 20px;text-align:center;font-size:11px;color:var(--muted);background:#fff;margin-top:50px}
+.owner-discrete-link{color:#b4bcc7;text-decoration:none;font-size:10px;margin-top:10px;display:inline-block;transition:.2s}
+.owner-discrete-link:hover{color:var(--navy)}
+
+.toast{position:fixed;right:20px;bottom:20px;background:var(--navy);color:#fff;padding:12px 16px;border-radius:10px;font-size:11px;box-shadow:var(--shadow);z-index:150;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:none}
+.mobile-cart-bar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--navy);color:#fff;padding:12px 14px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -8px 30px rgba(0,0,0,.18)}
+.mobile-cart-bar b{font-size:15px}
+.mobile-cart-bar small{display:block;color:#aebdcd;font-size:10px;font:10px "DM Mono"}
+.mobile-cart-bar button{border:0;background:var(--gold);color:var(--navy);border-radius:10px;padding:12px 18px;font-weight:700;font-size:13px;min-height:44px}
+
+/* ── TABLET ── */
+@media(max-width:1050px){
+  .product-grid{grid-template-columns:repeat(2,1fr)}
+  .menu-layout{grid-template-columns:1fr}
+  .cart{position:static}
+  .cart-items{max-height:300px;overflow-y:auto}
+  .hero{grid-template-columns:1fr}
+  .hero-visual{min-height:320px}
+  .info-strip{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  .payment-options{grid-template-columns:1fr 1fr}
+}
+/* ── MOBILE ── */
+@media(max-width:650px){
+  .topbar{height:62px;padding:0 14px}
+  .nav-pill{display:none}
+  .brand img{width:36px;height:36px}
+  .brand{font-size:11px;gap:8px}
+  .nav-link{padding:8px 10px;font-size:12px}
+  .hero{margin:12px 0 32px;border-radius:18px;min-height:auto}
+  .hero-copy{padding:28px 20px}
+  .hero h1{font-size:clamp(36px,10vw,52px);letter-spacing:-2px;line-height:.96}
+  .hero-copy>p:not(.eyebrow){font-size:13px}
+  .hero-actions{gap:8px}
+  .primary,.secondary{padding:11px 15px;font-size:12px}
+  .hero-visual{min-height:280px}
+  .slide img{padding:10px 14px}
+  .slide-nav{width:32px;height:32px;font-size:18px}
+  .hero-card{width:115px;height:148px;right:3%;bottom:5%;padding:13px;transform:rotate(4deg)}
+  .hero-card strong{font-size:28px}
+  .hero-card small{font-size:8px;line-height:1.2}
+  .hero-trust{gap:8px;flex-wrap:wrap;font-size:9px}
+  /* Catalog */
+  main{padding:0 12px 80px}
+  .section-heading{display:block}
+  .section-heading h2{font-size:22px;margin-bottom:12px}
+  .search{width:100%}
+  .product-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .product-image{height:140px}
+  .product-body{padding:11px}
+  .product-body h3{font-size:13px}
+  .product-body p{font-size:10px;min-height:36px}
+  .price{font-size:13px}
+  .add,.quote{font-size:9px;padding:7px 8px}
+  /* Modal full-screen friendly */
+  .modal{padding:0;align-items:flex-end}
+  .modal-card{border-radius:22px 22px 0 0;max-height:94vh;padding:24px 18px;width:100%}
+  .form-grid{grid-template-columns:1fr}
+  .payment-options{grid-template-columns:1fr}
+  .order-preview{grid-template-columns:1fr}
+  .info-strip{grid-template-columns:1fr;gap:10px;margin-top:28px}
+  .toast{left:14px;right:14px;bottom:90px;text-align:center}
+  .qty button{width:34px;height:34px;font-size:15px}
+  .qty span{min-width:18px;text-align:center}
+  main{padding-bottom:96px}
+  .mobile-cart-bar{display:flex}
+}
+@media(max-width:380px){
+  .product-grid{grid-template-columns:1fr}
+  .product-image{height:165px}
+  .hero h1{font-size:34px}
+}
+</style>
+<script src="config.js?v=10.0"></script>
+<script src="auth-core.js?v=9.1"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Tapcard PH NFC home">
+    <img src="assets/waveflow-nfc-logo.jpg" alt="Tapcard PH NFC logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'">
+    <div style="display:none;width:40px;height:40px;border-radius:50%;background:var(--navy);color:var(--gold);place-items:center;font-weight:800;font-size:12px;border:1px solid var(--gold);margin-right:2px">NFC</div>
+    <span>TAPCARD PH <b>NFC</b></span>
+  </a>
+  <div class="nav-right">
+    <button type="button" class="order-nav-btn" onclick="openOrderReview()" aria-label="View your order">View Order <span id="topOrderCount" class="order-nav-count">0</span></button>
+    <span class="nav-pill">⌁ NFC PRODUCTS <span>• DIRECT ORDERING</span></span>
+    <nav>
+      <a class="nav-link active" href="#catalog">Products</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">TAPCARD PH NFC SOLUTIONS</p>
+      <h1>Tap.<br>Connect.<br><em>Grow.</em></h1>
+      <p>Premium NFC cards and digital solutions designed to help businesses connect with customers faster, collect reviews, and turn every tap into an opportunity.</p>
+      <div class="hero-actions">
+        <button class="primary" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">Shop NFC products →</button>
+        <button class="secondary" onclick="openQuote('Custom NFC Solution')">Build a custom solution</button>
+      </div>
+      <div class="hero-trust"><span>Customizable</span><span>Business-ready</span><span>Easy to use</span></div>
+    </div>
+
+    <!-- 9-Image Slideshow -->
+    <div class="hero-visual" id="heroVisual">
+      <div class="slideshow" id="brandKitSlideshow">
+        <div class="slide active"><img src="assets/slide-1.jpg" alt="NFC Business Card - Tap to Phone" width="900" height="900" decoding="async" fetchpriority="high"></div>
+        <div class="slide"><img src="assets/slide-2.jpg" alt="Google Review NFC Card & Live Mobile View" width="899" height="899" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-3.jpg" alt="Google Review NFC Cards Pack" width="559" height="546" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-4.jpg" alt="Instagram & Facebook NFC Tap Cards" width="300" height="300" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-5.jpg" alt="NFC Smart Cards Variety Showcase" width="900" height="900" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-6.jpg" alt="Get More Google Reviews Stand with Live Customer Rating" width="800" height="800" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-7.jpg" alt="NFC Review Card on Stand Podium" width="800" height="800" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-8.jpg" alt="Rate Your Experience NFC Countertop Stands" width="900" height="900" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-9.jpg" alt="Google Review Countertop Stands in Black & White" width="900" height="900" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/slide-10.jpg" alt="Tap to Review Us on Google Countertop Display" width="750" height="750" loading="lazy" decoding="async"></div>
+        <div class="slide"><img src="assets/menu-stand.jpg" alt="NFC Menu Stand - Tap or Scan QR for Digital Menu" width="800" height="800" loading="lazy" decoding="async"></div>
+
+        <button class="slide-nav prev" id="slidePrev" aria-label="Previous slide">‹</button>
+        <button class="slide-nav next" id="slideNext" aria-label="Next slide">›</button>
+
+        <div class="slide-dots" id="slideDots"></div>
+      </div>
+      <div class="hero-card">
+        <span>STARTING AT</span><strong>₱499</strong><small>Customized NFC review cards</small>
+      </div>
+    </div>
+  </div>
+
+  <div id="catalog" class="menu-layout">
+    <section class="catalog">
+      <div class="section-heading">
+        <div><p class="eyebrow">PRODUCT CATALOG</p><h2>Choose your tap experience.</h2></div>
+        <label class="search"><span>⌕</span><input id="search" placeholder="Search NFC products"></label>
+      </div>
+      <div id="categoryTabs" class="categories"></div>
+      <p class="review-note">Review cards available for <b>Google</b>, <b>Facebook</b>, <b>Instagram</b>, and <b>Smart Menus</b>.</p>
+      <div id="productGrid" class="product-grid"></div>
+      
+      <div class="info-strip">
+        <div class="info"><b>01 · Tap</b><p>Customer taps the NFC card with a compatible smartphone.</p></div>
+        <div class="info"><b>02 · Connect</b><p>Open your chosen review page, profile, menu, contact link, or website.</p></div>
+        <div class="info"><b>03 · Grow</b><p>Make it easier for customers to discover, remember, and engage with your business.</p></div>
+      </div>
+    </section>
+
+    <!-- Cart -->
+    <aside class="cart">
+      <div class="cart-header">
+        <p class="eyebrow cart-eyebrow">YOUR ORDER</p>
+        <div class="cart-header-row">
+          <h2>NFC cards</h2>
+          <span id="cartCount" class="count">0</span>
+        </div>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div id="cartFooter" class="cart-footer hidden">
+        <div class="totals">
+          <span>Subtotal</span><b id="subtotal">₱0.00</b>
+          <span>Order processing <small>5%</small></span><b id="service">₱0.00</b>
+          <span>Delivery Fee</span><b id="deliveryFeeRow">₱0.00</b>
+          <span>Total</span><strong id="total">₱0.00</strong>
+        </div>
+        <button id="checkoutBtn" class="primary">Continue to Checkout <span>→</span></button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- Mobile-only sticky order bar: keeps checkout reachable without scrolling back up to the cart -->
+<div id="mobileCartBar" class="mobile-cart-bar hidden">
+  <div><b id="mobileCartTotal">₱0.00</b><small id="mobileCartCount">0 items</small></div>
+  <button onclick="document.getElementById('checkoutBtn').click()">Checkout →</button>
+</div>
+
+<!-- Sticky order review/edit modal -->
+<div id="orderReviewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="orderReviewTitle">
+  <div class="modal-card">
+    <button class="close" onclick="closeModal('orderReviewModal')">×</button>
+    <p class="eyebrow">REVIEW YOUR ORDER</p>
+    <h2 id="orderReviewTitle">Review & Edit Order</h2>
+    <p class="modal-sub">Check your products, formats, quantities, and total before continuing to checkout. You can still edit everything here.</p>
+    <div id="orderReviewList" class="review-list" style="margin-top:18px"></div>
+    <div class="review-total">
+      <span>Subtotal + processing + delivery</span><strong id="reviewTotalAmount">₱0.00</strong>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px">
+      <button type="button" class="secondary" onclick="closeModal('orderReviewModal')">Keep Shopping</button>
+      <button type="button" class="primary" onclick="continueToCheckout()">Continue to Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Checkout Modal -->
+<div id="checkoutModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <button class="close" onclick="closeModal('checkoutModal')">×</button>
+    <p class="eyebrow">SECURE CHECKOUT</p>
+    <h2>Order & Delivery Information</h2>
+    <p class="modal-sub">Please fill in your contact information. After you place the order, we will receive your order details and payment instructions.</p>
+
+    <form id="customerCheckoutForm" class="checkout-form">
+      <div class="form-grid">
+        <label>
+          <span>Full Name *</span>
+          <input id="custName" required placeholder="Juan Dela Cruz">
+        </label>
+        <label>
+          <span>Mobile Number *</span>
+          <input id="custPhone" required placeholder="0917-XXX-XXXX" type="tel">
+        </label>
+      </div>
+
+      <label>
+        <span>Email Address (Optional)</span>
+        <input id="custEmail" type="email" placeholder="name@email.com">
+      </label>
+
+      <label>
+        <span>Complete Delivery / Business Address *</span>
+        <textarea id="custAddress" required rows="2" placeholder="Street, Barangay, City, Province, Postal Code"></textarea>
+      </label>
+
+      <label>
+        <span>Custom Instructions / Notes for Owner</span>
+        <textarea id="custNotes" rows="2" placeholder="e.g. Please put Google link: https://g.page/r/... or business name"></textarea>
+      </label>
+
+      <label>
+        <span>Choose Payment Option</span>
+        <div class="payment-options">
+          <label class="payment-opt active"><input type="radio" name="paymentOption" value="GCash" checked> GCash</label>
+          <label class="payment-opt"><input type="radio" name="paymentOption" value="Maribank"> Maribank</label>
+          <label class="payment-opt"><input type="radio" name="paymentOption" value="Union Bank"> Union Bank</label>
+          <label class="payment-opt"><input type="radio" name="paymentOption" value="Cash On Delivery"> Cash On Delivery</label>
+        </div>
+      </label>
+
+      <div id="checkoutPayAccountBox" style="background:var(--cream);border-radius:10px;padding:12px 14px;margin:-6px 0 16px">
+        <p style="margin:0 0 3px;font-size:10px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase">Send payment to</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <p style="margin:0;font-size:15px;font-weight:700;color:var(--navy)" id="checkoutPayAccountNumber">Loading…</p>
+          <button type="button" id="checkoutCopyBtn" onclick="tcCopyCheckoutAccount()" style="display:none;flex:none;border:1px solid var(--gold);background:#fff;color:var(--navy);font:700 11px 'DM Mono';letter-spacing:.3px;border-radius:8px;padding:7px 12px;white-space:nowrap">Copy</button>
+        </div>
+        <p style="margin:2px 0 0;font-size:11px;color:var(--muted)" id="checkoutPayAccountName"></p>
+        <p id="checkoutPayInstructions" style="margin:8px 0 0;font-size:10px;color:var(--muted);line-height:1.5">Copy the account number, send your payment manually, and keep your payment reference for your records.</p>
+      </div>
+
+      <div class="order-preview">
+        <div><span>Total Items</span><b id="checkoutItemsCount">0 pcs</b></div>
+        <div><span>Order Amount</span><b id="checkoutTotalAmount">₱0.00</b></div>
+      </div>
+
+      <div class="terms-box">
+        <label>
+          <input id="orderTerms" type="checkbox" required>
+          <span>
+            <strong>Order confirmation & NFC finalization</strong>
+            <p>I have reviewed my products, quantities, payment method, delivery details, and total. I understand that once I confirm this order, changes or cancellations may no longer be possible because the NFC domain/link may be permanently programmed or embedded into the physical chip during fulfillment.</p>
+          </span>
+        </label>
+        <div class="final-warning"><b>Final check:</b> Please correct anything that is wrong before placing the order. After confirmation, Tapcard PH will use these details to prepare and encode the NFC cards.</div>
+      </div>
+
+      <button type="button" class="secondary" style="width:100%;margin-top:4px" onclick="openOrderReviewFromCheckout()">← Review / Edit Order</button>
+      <button type="submit" class="primary" style="margin-top:2px">Confirm & Place Final Order →</button>
+    </form>
+  </div>
+</div>
+
+<!-- Order Confirmation Modal -->
+<div id="confirmationModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card" style="position:relative">
+    <button type="button" class="close" aria-label="Close order confirmation" title="Close and return to the browser" onclick="closeModal('confirmationModal')">×</button>
+    <div class="confirm-box">
+      <div class="confirm-icon">✓</div>
+      <p class="eyebrow" style="color:var(--success)">ORDER RECEIVED</p>
+      <h2 id="confirmedOrderTitle">Order #TC-000000</h2>
+      <p id="confirmationThankYou" style="font-size:12px;color:var(--muted);margin:0 0 10px">Thank you for ordering from Tapcard PH!</p>
+      <div class="token-card">
+        <b id="confirmedPaymentTitle">Payment Reminder</b>
+        <p id="confirmedPaymentText" style="margin-bottom:0">Send your payment manually to the account shown during checkout. Keep your payment reference and receipt.</p>
+      </div>
+      <div id="messengerReceiptBox" style="margin-top:12px;background:var(--cream);border-radius:12px;padding:13px 14px;text-align:left">
+        <b style="display:block;font-size:12px;color:var(--navy);margin-bottom:5px">Payment Receipt Details</b>
+        <p style="margin:0 0 10px;font-size:10px;color:var(--muted);line-height:1.5">Before you finish, enter the payment reference number and select which bank/e-wallet the receipt is from. These details will be included in your Messenger message.</p>
+        <div style="display:grid;gap:9px">
+          <label style="display:grid;gap:5px">
+            <span style="font:9px 'DM Mono';text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Receipt / Payment Type</span>
+            <select id="receiptPaymentType" style="width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;outline:0;font-size:12px;color:var(--ink)">
+              <option value="">Select GCash / Maribank / Union Bank</option>
+              <option value="GCash">GCash</option>
+              <option value="Maribank">Maribank</option>
+              <option value="Union Bank">Union Bank</option>
+            </select>
+          </label>
+          <label style="display:grid;gap:5px">
+            <span style="font:9px 'DM Mono';text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Reference Number</span>
+            <input id="receiptReferenceNumber" type="text" maxlength="100" autocomplete="off" placeholder="Enter payment reference number" style="width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;outline:0;font-size:12px;color:var(--ink)">
+          </label>
+        </div>
+        <p id="receiptValidationText" style="margin:9px 0 10px;font-size:10px;color:#8b3b32;line-height:1.4">Reference number and receipt type are required before you can send your receipt.</p>
+      </div>
+      <div id="messengerFinalStep" class="hidden" style="margin-top:12px;background:var(--cream);border-radius:12px;padding:13px 14px;text-align:center">
+        <b style="display:block;font-size:12px;color:var(--navy);margin-bottom:5px">Payment Receipt Screenshot</b>
+        <p style="margin:0 0 10px;font-size:10px;color:var(--muted);line-height:1.5">Your payment reference has been saved.</p>
+        <button id="sendReceiptMessengerBtn" type="button" class="primary" style="width:100%" onclick="sendPaymentReceiptViaMessenger()">💬 Please Send Receipt</button>
+      </div>
+      <p id="confirmationVerificationText" class="hidden" style="font-size:11px;color:var(--muted);margin:12px 0 0;line-height:1.55">Please hold on and give us <b>3–10 minutes</b> to verify and process your order. We are sorry for the delay because of the high volume of customer orders. <b>We will send you a message via Messenger or text.</b></p>
+      <button id="confirmDoneBtn" type="button" class="primary" style="width:100%;margin-top:14px" onclick="finishOrderConfirmation()" disabled>Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Quote Modal -->
+<div id="quoteModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <button class="close" onclick="closeModal('quoteModal')">×</button>
+    <p class="eyebrow">CUSTOM SOLUTION</p>
+    <h2 id="quoteTitle">Let’s build it together.</h2>
+    <p class="modal-sub">This service is custom tailored to your business requirements.</p>
+    <div style="background:var(--cream);border-radius:12px;padding:18px;margin:20px 0">
+      <b style="font-size:13px">Contact our design and technical team</b>
+      <p style="font-size:11px;color:var(--muted);line-height:1.5;margin:6px 0 0">
+        Inquire about large volume custom printed NFC cards, VIP membership cards, or restaurant smart menus.
+      </p>
+      <div style="margin-top:12px;display:grid;gap:6px">
+        <a href="tel:+639380446242" style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--navy);text-decoration:none">📞 0938 044 6242</a>
+        <a href="mailto:tapcardphnfc@gmail.com" style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--navy);text-decoration:none">✉️ tapcardphnfc@gmail.com</a>
+      </div>
+    </div>
+    <button class="primary" onclick="closeModal('quoteModal')">Back to products →</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- Footer with Discrete Owner Access Link -->
+<footer>
+  <p>© 2026 Tapcard PH NFC Solutions. All rights reserved.</p>
+  <p style="margin-top:6px;font-size:12px">
+    <a href="tel:+639380446242" style="color:var(--muted);text-decoration:none">📞 0938 044 6242</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:tapcardphnfc@gmail.com" style="color:var(--muted);text-decoration:none">✉️ tapcardphnfc@gmail.com</a>
+  </p>
+  <a href="login.html" class="owner-discrete-link">🔒 Owner Access Portal</a>
+</footer>
+
+<script>
+// V10 storefront catalog. Kept local so the static storefront does not require a product API.
+const defaults = [
+  {id:1,name:"NFC Google Review Card",cat:"Google Review",price:899,description:"Help customers open your Google review page with one tap.",tag:"POPULAR",img:"assets/slide-7.jpg",variants:{business_card:899,standee:999,sticker:1100},formats:[{key:"business_card",label:"Business Card"},{key:"standee",label:"NFC Standee"},{key:"sticker",label:"NFC Sticker / Square"}],promotion:{format:"sticker",threshold:3,freeFormat:"business_card",freeLabel:"Business Card",freeQty:1}},
+  {id:2,name:"NFC Facebook Review Card",cat:"Facebook Review",price:899,description:"Help customers access your Facebook review or recommendation page.",tag:"NEW",img:"assets/slide-4.jpg",variants:{business_card:899,standee:999,sticker:1100},formats:[{key:"business_card",label:"Business Card"},{key:"standee",label:"NFC Standee"},{key:"sticker",label:"NFC Sticker / Square"}],promotion:{format:"sticker",threshold:3,freeFormat:"business_card",freeLabel:"Business Card",freeQty:1}},
+  {id:3,name:"NFC Digital Business Card",cat:"Digital Business Card",price:1499,description:"A customized digital identity page for easier access to your contact and business information.",tag:"CUSTOMIZED",img:"assets/business-card-nfc.jpg",variants:{business_card:1499},formats:[{key:"business_card",label:"Own Domain Name"}],offerNote:"Sale offer noted until December 2026.",inclusions:["Contact number","Email","Name","Company website link (for business)"]},
+  {id:4,name:"NFC Smart Menu Card",cat:"Smart Menu",price:999,description:"Help customers access your digital menu and ordering page with a tap.",tag:"BUSINESS",img:"assets/menu-stand.jpg",variants:{standee:999,sticker:1100},formats:[{key:"standee",label:"NFC Standee"},{key:"sticker",label:"NFC Sticker / Square"}],promotions:[{format:"standee",threshold:3,freeFormat:"business_card",freeLabel:"Business Card",freeQty:1},{format:"sticker",threshold:4,freeFormat:"business_card",freeLabel:"Business Card",freeQty:2}]},
+  {id:5,name:"NFC ATM / GOV / CARD (LTO & SSS)",cat:"ATM / GOV / CARD",price:899,description:"An NFC card for supported ATM, government, LTO / LTMS and SSS-related links.",tag:"GOVERNMENT",img:"assets/gov-ltms.jpg",variants:{business_card:899,safetag_circle:499},formats:[{key:"business_card",label:"Business Card"},{key:"safetag_circle",label:"NFC SafeTag Size"}]},
+  {id:6,name:"NFC Social Media Card",cat:"Social Media",price:899,description:"Provide easier access to social media profiles and links.",tag:"READY TO ORDER",img:"assets/slide-5.jpg",variants:{business_card:899,safetag_circle:599},formats:[{key:"business_card",label:"Business Card"},{key:"safetag_circle",label:"NFC SafeTag Size"}],promotion:{format:"safetag_circle",threshold:3,freeFormat:"safetag_circle",freeLabel:"NFC SafeTag Size",freeQty:1}},
+  {id:7,name:"Custom NFC System",cat:"Custom",price:null,description:"Custom NFC workflows, landing pages and business systems.",tag:"CUSTOM",img:"assets/slide-9.jpg",variants:null}
+];
+
+// The four physical formats a product can be ordered in. Keys must match server.js's
+// PRODUCT_FORMATS exactly — that's what checkout verifies prices against.
+const FORMATS = [
+  {key:"business_card", label:"Business Card"},
+  {key:"standee", label:"NFC Standee"},
+  {key:"sticker", label:"NFC Sticker / Square"},
+  {key:"safetag_circle", label:"NFC SafeTag Size"}
+];
+function formatsFor(p) { return p.formats || FORMATS.filter(f => p.variants && p.variants[f.key] != null); }
+function promotionsFor(p, formatKey, qty) {
+  const rules = p.promotions || (p.promotion ? [p.promotion] : []);
+  return rules.filter(r => r.format === formatKey && qty >= r.threshold)
+    .reduce((sum, r) => sum + Math.floor(qty / r.threshold) * r.freeQty, 0);
+}
+function promotionLabel(p, formatKey, qty) {
+  const free = promotionsFor(p, formatKey, qty);
+  const rule = (p.promotions || (p.promotion ? [p.promotion] : [])).find(r => r.format === formatKey && qty >= r.threshold);
+  return free && rule ? `Promotion: ${free} free ${rule.freeLabel}${free===1?'':'s'}` : '';
+}
+
+let products = defaults;
+let selectedFormat = {}; // productId -> format key currently chosen on its card
+let cart = [];
+let activeCat = "All";
+const peso = n => n == null ? "Contact us" : "₱" + Number(n).toLocaleString("en-PH", { minimumFractionDigits: 2 });
+
+// Price to show/charge for a product given whichever format is currently selected for it.
+function priceFor(p, formatKey) {
+  if (p.variants && p.variants[formatKey] != null) return p.variants[formatKey];
+  return p.price;
+}
+
+async function loadProducts() {
+  // PostgreSQL is the price source of truth. Keep the local catalog as the visual
+  // fallback, but merge live server prices/variants so the customer never sees one
+  // price and gets charged another.
+  try {
+    if (window.TAPCARD_API_BASE && typeof window.tcApi === 'function') {
+      const live = await window.tcApi('/api/products');
+      if (Array.isArray(live) && live.length) {
+        const localById = new Map(products.map(p => [p.id, p]));
+        products = live.map(lp => {
+          const local = localById.get(lp.id) || {};
+          const merged = { ...local, ...lp };
+          if (local.formats) merged.formats = local.formats;
+          if (local.promotions) merged.promotions = local.promotions;
+          if (local.promotion) merged.promotion = local.promotion;
+          if (local.inclusions) merged.inclusions = local.inclusions;
+          if (local.offerNote) merged.offerNote = local.offerNote;
+          return merged;
+        });
+      }
+    }
+  } catch (err) {
+    console.warn('[Catalog] Live pricing unavailable; keeping local catalog for display.', err.message);
+  }
+
+  products.forEach(p => {
+    if (p.variants) {
+      const available = formatsFor(p);
+      selectedFormat[p.id] = available.some(f => f.key === selectedFormat[p.id])
+        ? selectedFormat[p.id]
+        : (available[0]?.key || 'business_card');
+    }
+  });
+  renderCategories();
+  renderProducts();
+}
+
+function renderCategories() {
+  let cats = ["All", ...new Set(products.map(p => p.cat))];
+  categoryTabs.innerHTML = cats.map(c => `<button class="cat ${c === activeCat ? "active" : ""}" onclick="setCat('${c}')">${c}</button>`).join("");
+}
+
+function setCat(c) {
+  activeCat = c;
+  renderCategories();
+  renderProducts();
+}
+
+function renderProducts() {
+  let q = search.value.toLowerCase().trim();
+  let list = products.filter(p => (activeCat === "All" || p.cat === activeCat) && (p.name + " " + p.desc + " " + p.cat).toLowerCase().includes(q));
+  productGrid.innerHTML = list.length ? list.map(p => {
+    const fmt = selectedFormat[p.id] || 'business_card';
+    const price = priceFor(p, fmt);
+    return `
+    <article class="product">
+      <div class="product-image">
+        <span class="badge">${p.tag}</span>
+        ${p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" decoding="async">` : `<div class="mock-card">TAPCARD PH</div>`}
+      </div>
+      <div class="product-body">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <div class="product-meta"><span>1 tap setup</span><span>Business-ready</span></div>
+        ${p.variants ? `
+        <div class="format-select" role="group" aria-label="Choose format">
+          ${formatsFor(p).map(f => `<button type="button" class="format-opt ${f.key === fmt ? 'active' : ''}" onclick="chooseFormat(${p.id},'${f.key}')">${f.label}</button>`).join("")}
+        </div>` : ``}
+        ${p.formats ? `<div style="font-size:10px;color:var(--muted);margin:-4px 0 8px">Selected: <b style="color:var(--navy)">${formatsFor(p).find(f=>f.key===fmt)?.label || ''}</b></div>` : ``}
+        ${p.offerNote ? `<p style="font-size:10px;color:#8a6b10;margin:0 0 8px">${p.offerNote}</p>` : ``}
+        ${p.inclusions ? `<div style="font-size:10px;color:var(--muted);line-height:1.6;margin:0 0 10px">Includes: ${p.inclusions.join(' · ')}</div>` : ``}
+        ${p.promotion || p.promotions ? `<div style="font-size:10px;color:#176b4d;margin:0 0 10px">${(p.promotions || [p.promotion]).map(r=>`${r.threshold}${r.format==='sticker'?' Sticker / Square':r.format==='standee'?' Standee':' SafeTag Size'}: get ${r.freeQty} free ${r.freeLabel}`).join(' · ')}</div>` : ``}
+        <div class="product-row">
+          <span class="price">${peso(price)}${price != null ? '<small class="unit"> / pc</small>' : ''}</span>
+          ${price == null ? `<button class="quote" onclick="openQuote('${p.name}')">CONTACT US</button>` : `<button class="add" onclick="addToCart(${p.id})">ADD TO ORDER</button>`}
+        </div>
+      </div>
+    </article>
+  `;
+  }).join("") : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:#66758a;font-size:12px">No products found. Try another search.</div>`;
+}
+
+function chooseFormat(id, formatKey) {
+  selectedFormat[id] = formatKey;
+  renderProducts();
+}
+
+function addToCart(id) {
+  let p = products.find(x => x.id === id);
+  const formatKey = p.variants ? (selectedFormat[id] || 'business_card') : null;
+  const formatLabel = formatKey ? formatsFor(p).find(f => f.key === formatKey)?.label : null;
+  const price = formatKey ? priceFor(p, formatKey) : p.price;
+  const cartKey = formatKey ? `${id}::${formatKey}` : `${id}`;
+
+  let item = cart.find(x => x.cartKey === cartKey);
+  item ? item.qty++ : cart.push({ id, cartKey, name: p.name, img: p.img, price, qty: 1, format: formatKey, formatLabel });
+  renderCart();
+  toast("Added to your order");
+}
+
+function changeQty(cartKey, d) {
+  let x = cart.find(i => i.cartKey === cartKey);
+  if (!x) return;
+  x.qty += d;
+  if (x.qty <= 0) cart = cart.filter(i => i.cartKey !== cartKey);
+  renderCart();
+}
+
+// Static V10 fallback: no settings API is required for the storefront.
+// Set this number when a fixed delivery fee is needed.
+let deliveryFeeCache = 0;
+
+function renderCart() {
+  const totalCount = cart.reduce((s, x) => s + x.qty, 0);
+  cartCount.textContent = totalCount;
+  const topOrderCount = document.getElementById('topOrderCount');
+  if (topOrderCount) topOrderCount.textContent = totalCount;
+  const mobileBar = document.getElementById("mobileCartBar");
+  if (!cart.length) {
+    cartItems.innerHTML = '<div class="empty">Your order is waiting.<br><small>Add a ready-to-order NFC card.</small></div>';
+    cartFooter.classList.add("hidden");
+    mobileBar?.classList.add("hidden");
+    return;
+  }
+  cartItems.innerHTML = cart.map(x => `
+    <div class="cart-item">
+      <div class="mini">${x.img ? `<img src="${x.img}" alt="${x.name}">` : 'NFC'}</div>
+      <div>
+        <b>${x.name}</b>
+        <small>${x.formatLabel ? x.formatLabel + ' · ' : ''}${peso(x.price)} / pc</small>${promotionLabel(products.find(p=>p.id===x.id),x.format,x.qty) ? `<small style="color:var(--success)">${promotionLabel(products.find(p=>p.id===x.id),x.format,x.qty)}</small>` : ''}
+        <div class="qty">
+          <button onclick="changeQty('${x.cartKey}',-1)">−</button>
+          <span>${x.qty} pcs</span>
+          <button onclick="changeQty('${x.cartKey}',1)">+</button>
+        </div>
+      </div>
+      <span class="cart-price">${peso(x.price * x.qty)}</span>
+    </div>
+  `).join("");
+
+  let sub = cart.reduce((s, x) => s + x.price * x.qty, 0);
+  let fee = sub * .05;
+  let totalVal = sub + fee + deliveryFeeCache;
+
+  subtotal.textContent = peso(sub);
+  service.textContent = peso(fee);
+  document.getElementById("deliveryFeeRow").textContent = peso(deliveryFeeCache);
+  document.getElementById("total").textContent = peso(totalVal);
+  cartFooter.classList.remove("hidden");
+
+  // Keep the mobile sticky bar in sync with the cart totals
+  if (mobileBar) {
+    const count = cart.reduce((s, x) => s + x.qty, 0);
+    document.getElementById("mobileCartTotal").textContent = peso(totalVal);
+    document.getElementById("mobileCartCount").textContent = `${count} item${count === 1 ? "" : "s"}`;
+    mobileBar.classList.remove("hidden");
+  }
+}
+
+// Order review / edit flow — V13 baseline plus a final review step.
+function openOrderReview() {
+  if (!cart.length) { toast('Your order is empty'); return; }
+  renderOrderReview();
+  document.getElementById('orderReviewModal').classList.remove('hidden');
+}
+
+function renderOrderReview() {
+  const list = document.getElementById('orderReviewList');
+  if (!list) return;
+  list.innerHTML = cart.length ? cart.map(x => `
+    <div class="review-row">
+      <div class="review-thumb">${x.img ? `<img src="${x.img}" alt="${x.name}">` : 'NFC'}</div>
+      <div>
+        <b style="font-size:11px">${x.name}</b>
+        <small style="display:block;color:var(--muted);font-size:9px;margin-top:3px">${x.formatLabel ? x.formatLabel + ' · ' : ''}${peso(x.price)} / pc</small>${promotionLabel(products.find(p=>p.id===x.id),x.format,x.qty) ? `<small style="display:block;color:var(--success);font-size:9px;margin-top:3px">${promotionLabel(products.find(p=>p.id===x.id),x.format,x.qty)}</small>` : ''}
+        <div class="review-actions">
+          <button type="button" onclick="changeQty('${x.cartKey}',-1);renderOrderReview()">−</button>
+          <span style="font-size:10px;min-width:42px;text-align:center">${x.qty} pcs</span>
+          <button type="button" onclick="changeQty('${x.cartKey}',1);renderOrderReview()">+</button>
+          <button type="button" title="Remove item" onclick="removeFromCart('${x.cartKey}');renderOrderReview()" style="margin-left:4px;width:auto;padding:0 8px">Remove</button>
+        </div>
+      </div>
+      <b style="font-size:11px">${peso(x.price * x.qty)}</b>
+    </div>
+  `).join('') : '<div class="empty">Your order is empty.</div>';
+
+  const sub = cart.reduce((s, x) => s + x.price * x.qty, 0);
+  document.getElementById('reviewTotalAmount').textContent = peso(sub * 1.05 + deliveryFeeCache);
+}
+
+function removeFromCart(cartKey) {
+  cart = cart.filter(x => x.cartKey !== cartKey);
+  renderCart();
+  if (!cart.length) closeModal('orderReviewModal');
+}
+
+function continueToCheckout() {
+  if (!cart.length) return;
+  const count = cart.reduce((s, x) => s + x.qty, 0);
+  const sub = cart.reduce((s, x) => s + x.price * x.qty, 0);
+  const totalVal = sub * 1.05 + deliveryFeeCache;
+  document.getElementById('checkoutItemsCount').textContent = count + " pcs";
+  document.getElementById('checkoutTotalAmount').textContent = peso(totalVal);
+  document.getElementById('orderTerms').checked = false;
+  closeModal('orderReviewModal');
+  document.getElementById('checkoutModal').classList.remove('hidden');
+}
+
+function openOrderReviewFromCheckout() {
+  closeModal('checkoutModal');
+  openOrderReview();
+}
+
+document.getElementById('checkoutBtn').onclick = () => openOrderReview();
+
+// Payment Option Selection
+let checkoutPaymentAccounts = null;
+let checkoutCopyValue = '';
+let lastConfirmedOrder = null; // current order + receipt state for confirmation
+function refreshCheckoutPayAccount() {
+  const method = document.querySelector('input[name="paymentOption"]:checked').value;
+  const numEl = document.getElementById('checkoutPayAccountNumber');
+  const nameEl = document.getElementById('checkoutPayAccountName');
+  const box = document.getElementById('checkoutPayAccountBox');
+  const copyBtn = document.getElementById('checkoutCopyBtn');
+  const match = (window.TAPCARD_PAYMENT_FALLBACKS || {})[method.toLowerCase()] || null;
+
+  if (method.toLowerCase() === 'cash on delivery') {
+    box.style.display = '';
+    numEl.textContent = 'Cash On Delivery';
+    nameEl.textContent = 'Pay the delivery/order amount upon delivery.';
+    checkoutCopyValue = '';
+    copyBtn.style.display = 'none';
+    const instructions = document.getElementById('checkoutPayInstructions');
+    if (instructions) instructions.textContent = 'No online payment is required. Pay the order amount to the delivery rider upon delivery.';
+    return;
+  }
+
+  box.style.display = '';
+  if (match) {
+    numEl.textContent = `${match.channel}: ${match.account_number}`;
+    nameEl.textContent = match.account_name ? `Account name: ${match.account_name}` : '';
+    checkoutCopyValue = match.account_number;
+    copyBtn.style.display = '';
+    copyBtn.textContent = 'Copy';
+    const instructions = document.getElementById('checkoutPayInstructions');
+    if (instructions) instructions.textContent = 'Copy the account number, send your payment manually, and keep your payment reference for your records.';
+  } else {
+    numEl.textContent = 'Account details not set yet — contact us before paying.';
+    nameEl.textContent = '';
+    checkoutCopyValue = '';
+    copyBtn.style.display = 'none';
+  }
+}
+
+// Copies the currently-shown account number. type="button" on the element itself
+// already prevents form submission; this is a second guard.
+function tcCopyCheckoutAccount() {
+  if (!checkoutCopyValue) return;
+  const btn = document.getElementById('checkoutCopyBtn');
+  window.tcCopyText(checkoutCopyValue, (ok) => {
+    btn.textContent = ok ? 'Copied!' : 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+}
+document.querySelectorAll('.payment-opt input').forEach(radio => {
+  radio.onchange = () => {
+    document.querySelectorAll('.payment-opt').forEach(opt => opt.classList.remove('active'));
+    radio.parentElement.classList.add('active');
+    refreshCheckoutPayAccount();
+  };
+});
+async function loadDeliveryFee() {
+  const fallback = Number(window.TAPCARD_DEFAULT_DELIVERY_FEE);
+  deliveryFeeCache = Number.isFinite(fallback) && fallback >= 0 ? fallback : 0;
+  try {
+    if (window.TAPCARD_API_BASE) {
+      const data = await window.tcApi('/api/settings/delivery-fee');
+      const fee = Number(data.deliveryFee);
+      if (Number.isFinite(fee) && fee >= 0) deliveryFeeCache = fee;
+    }
+  } catch (err) {
+    console.warn('[Delivery Fee] Using configured fallback:', err.message);
+  }
+  renderCart();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  refreshCheckoutPayAccount();
+  loadDeliveryFee();
+});
+
+// Process Order Submission — V32 production flow.
+// The PostgreSQL backend is the source of truth for real orders. Web3Forms remains
+// an independent backup notification and is only fired after the backend succeeds.
+document.getElementById('customerCheckoutForm').onsubmit = async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const email = document.getElementById('custEmail').value.trim();
+  const address = document.getElementById('custAddress').value.trim();
+  const notes = document.getElementById('custNotes').value.trim();
+  const paymentRadio = document.querySelector('input[name="paymentOption"]:checked');
+  if (!paymentRadio) { toast('Please choose a payment option.'); return; }
+  const paymentMethod = paymentRadio.value;
+  const paymentInfo = (window.TAPCARD_PAYMENT_FALLBACKS || {})[paymentMethod.toLowerCase()] || {};
+
+  const submitBtn = document.querySelector('#customerCheckoutForm button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending order…'; }
+
+  try {
+    if (!window.TAPCARD_API_BASE || typeof window.tcApi !== 'function') {
+      throw new Error('Order service is not configured. Please try again later.');
+    }
+
+    const orderPayload = {
+      name,
+      phone,
+      email,
+      address,
+      notes,
+      paymentMethod,
+      deviceId: (window.TapcardCore && typeof window.TapcardCore.getOrCreateDeviceId === 'function')
+        ? window.TapcardCore.getOrCreateDeviceId()
+        : null,
+      items: cart.map(x => ({ id: x.id, qty: x.qty, format: x.format || undefined }))
+    };
+
+    // Backend verifies product prices, fees, payment method and totals server-side.
+    const backendOrder = await window.tcApi('/api/orders/checkout', {
+      method: 'POST',
+      body: JSON.stringify(orderPayload)
+    });
+
+    const orderNumber = backendOrder.orderNumber;
+    const total = Number(backendOrder.total);
+    const sub = cart.reduce((sum, x) => sum + x.price * x.qty, 0);
+    const fee = sub * 0.05;
+    const itemsSummary = cart.map(c => {
+      const p = products.find(x => x.id === c.id);
+      const free = p ? promotionLabel(p, c.format, c.qty) : '';
+      return `${c.qty}x ${c.name}${c.formatLabel ? ' (' + c.formatLabel + ')' : ''} @ ${peso(c.price)}${free ? '\n  ' + free : ''}`;
+    }).join('\n');
+
+    // Independent backup notification — never used as the order database.
+    window.tcNotifyWeb3Forms?.({
+      subject: `New Order ${orderNumber} — Tapcard PH NFC`,
+      from_name: `Tapcard PH NFC — ${name}`,
+      name,
+      email: email || 'tapcardphnfc@gmail.com',
+      phone,
+      message: [
+        'NEW TAPCARD PH NFC ORDER',
+        `Order Number: ${orderNumber}`,
+        `Customer: ${name}`,
+        `Mobile: ${phone}`,
+        `Email: ${email || 'Not provided'}`,
+        `Delivery / Business Address: ${address}`,
+        `Payment Method: ${paymentMethod}`,
+        `Payment Account: ${paymentMethod === 'Cash On Delivery' ? 'Cash on delivery — no account required' : (paymentInfo.account_number || 'Not set')}`,
+        `Account Name: ${paymentMethod === 'Cash On Delivery' ? 'Pay rider upon delivery' : (paymentInfo.account_name || 'Not provided')}`,
+        `Items:\n${itemsSummary}`,
+        `Order Total: ${peso(total)}`,
+        `Payment Status: ${paymentMethod === 'Cash On Delivery' ? 'COD — PAY ON DELIVERY' : 'PAYMENT PENDING — OWNER VERIFICATION REQUIRED'}`,
+        `Customer Notes: ${notes || '(none)'}`,
+        `Tracking Link: ${window.location.origin}/track.html?token=${encodeURIComponent(backendOrder.trackingToken)}`,
+        `Submitted: ${new Date().toISOString()}`
+      ].join('\n'),
+      order_number: orderNumber,
+      customer_name: name,
+      mobile_number: phone,
+      email_address: email || '(not provided)',
+      delivery_business_address: address,
+      custom_instructions_notes: notes || '(none)',
+      payment_method: paymentMethod,
+      payment_account_number: paymentMethod === 'Cash On Delivery' ? 'COD — no account required' : (paymentInfo.account_number || 'Not set'),
+      order_total: peso(total),
+      tracking_link: `${window.location.origin}/track.html?token=${encodeURIComponent(backendOrder.trackingToken)}`,
+      order_terms_accepted: 'YES',
+      submitted_at: new Date().toISOString(),
+      botcheck: ''
+    });
+
+    lastConfirmedOrder = {
+      orderNumber,
+      trackingToken: backendOrder.trackingToken,
+      paymentMethod,
+      total: peso(total),
+      name, phone, email, address, notes,
+      receiptType: '', referenceNumber: '',
+      receiptMessengerOpened: false,
+      receiptDetailsSaved: false,
+      receiptDetailsSubmitted: false
+    };
+
+    cart = [];
+    renderCart();
+    closeModal('checkoutModal');
+    document.getElementById('confirmedOrderTitle').textContent = `Order #${orderNumber}`;
+    const receiptBox = document.getElementById('messengerReceiptBox');
+    const paymentTitle = document.getElementById('confirmedPaymentTitle');
+    const paymentText = document.getElementById('confirmedPaymentText');
+    const receiptTypeEl = document.getElementById('receiptPaymentType');
+    const receiptRefEl = document.getElementById('receiptReferenceNumber');
+    const receiptValidationEl = document.getElementById('receiptValidationText');
+    const messengerFinalStep = document.getElementById('messengerFinalStep');
+    const messengerBtn = document.getElementById('sendReceiptMessengerBtn');
+    const doneBtn = document.getElementById('confirmDoneBtn');
+    receiptTypeEl.value = paymentMethod === 'Cash On Delivery' ? '' : paymentMethod;
+    receiptRefEl.value = '';
+    receiptTypeEl.disabled = paymentMethod === 'Cash On Delivery';
+    receiptRefEl.disabled = paymentMethod === 'Cash On Delivery';
+    messengerFinalStep.classList.add('hidden');
+    messengerBtn.disabled = false;
+    messengerBtn.textContent = '💬 Please Send Receipt';
+    doneBtn.disabled = false;
+    doneBtn.textContent = 'Done';
+
+    // Surface the private tracking link without changing the existing confirmation design.
+    let trackingLink = document.getElementById('confirmedTrackingLink');
+    if (!trackingLink) {
+      trackingLink = document.createElement('a');
+      trackingLink.id = 'confirmedTrackingLink';
+      trackingLink.target = '_blank';
+      trackingLink.rel = 'noopener noreferrer';
+      trackingLink.style.cssText = 'display:block;margin:12px 0;font-size:12px;font-weight:700;color:#002348;text-decoration:underline;';
+      document.getElementById('confirmedOrderTitle').insertAdjacentElement('afterend', trackingLink);
+    }
+    trackingLink.href = `${window.location.origin}/track.html?token=${encodeURIComponent(backendOrder.trackingToken)}`;
+    trackingLink.textContent = 'Open your private order tracking page →';
+
+    const thankYouEl = document.getElementById('confirmationThankYou');
+    const verificationEl = document.getElementById('confirmationVerificationText');
+
+    if (paymentMethod === 'Cash On Delivery') {
+      receiptBox.classList.add('hidden');
+      paymentTitle.textContent = 'Cash On Delivery';
+      paymentText.textContent = 'No online payment is required. Pay the order amount to the delivery rider upon delivery.';
+      thankYouEl.classList.remove('hidden');
+      verificationEl.classList.remove('hidden');
+      paymentTitle.parentElement.classList.remove('hidden');
+      doneBtn.classList.remove('hidden');
+    } else {
+      receiptBox.classList.remove('hidden');
+      paymentTitle.parentElement.classList.add('hidden');
+      thankYouEl.classList.add('hidden');
+      verificationEl.classList.add('hidden');
+      doneBtn.classList.remove('hidden');
+      updateReceiptConfirmationState();
+    }
+    document.getElementById('confirmationModal').classList.remove('hidden');
+  } catch (err) {
+    console.error('Order submission failed:', err);
+    alert(err.message || 'Something went wrong placing your order. Please try again.');
+  } finally {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
+  }
+};
+
+function updateReceiptConfirmationState() {
+  if (!lastConfirmedOrder || lastConfirmedOrder.paymentMethod === 'Cash On Delivery') return;
+  const typeEl = document.getElementById('receiptPaymentType');
+  const refEl = document.getElementById('receiptReferenceNumber');
+  const validationEl = document.getElementById('receiptValidationText');
+  const doneBtn = document.getElementById('confirmDoneBtn');
+  const type = typeEl.value.trim();
+  const ref = refEl.value.trim();
+  const typeMatchesOrder = type === lastConfirmedOrder.paymentMethod;
+  const valid = !!type && !!ref && typeMatchesOrder;
+  doneBtn.disabled = !valid;
+  validationEl.textContent = valid
+    ? 'Payment details are ready. Tap Done to save them and continue.'
+    : `Reference number and receipt type (${lastConfirmedOrder.paymentMethod}) are required before you can tap Done.`;
+}
+
+async function savePaymentDetailsToBackend(order, referenceNumber) {
+  if (!order?.trackingToken) throw new Error('Missing order tracking token. Please reopen your tracking page and try again.');
+  const result = await window.tcApi(`/api/orders/track/${encodeURIComponent(order.trackingToken)}/payment`, {
+    method: 'POST',
+    body: JSON.stringify({ referenceNumber, amountPaid: null })
+  });
+  // Web3Forms remains an independent backup notification after the database update succeeds.
+  window.tcNotifyWeb3Forms?.({
+    subject: `Payment Details Update ${order.orderNumber} — Tapcard PH NFC`,
+    from_name: `Tapcard PH NFC — ${order.name}`,
+    name: order.name,
+    email: order.email || 'tapcardphnfc@gmail.com',
+    phone: order.phone,
+    message: [
+      'TAPCARD PH NFC PAYMENT DETAILS UPDATE',
+      `Order Number: ${order.orderNumber}`,
+      `Customer: ${order.name}`,
+      `Mobile: ${order.phone}`,
+      `Email: ${order.email || '(not provided)'}`,
+      `Payment Method: ${order.paymentMethod}`,
+      `Reference Number: ${referenceNumber}`,
+      `Order Total: ${order.total}`,
+      'Payment status: PAYMENT DETAILS SAVED — OWNER VERIFICATION REQUIRED'
+    ].join('\n'),
+    order_number: order.orderNumber,
+    customer_name: order.name,
+    payment_method: order.paymentMethod,
+    payment_reference_number: referenceNumber,
+    order_total: order.total,
+    payment_status: 'PAYMENT DETAILS SAVED — OWNER VERIFICATION REQUIRED',
+    updated_at: new Date().toISOString(),
+    botcheck: ''
+  });
+  return result;
+}
+
+async function sendPaymentReceiptViaMessenger() {
+  if (!lastConfirmedOrder || lastConfirmedOrder.paymentMethod === 'Cash On Delivery') return;
+
+  const o = lastConfirmedOrder;
+  const typeEl = document.getElementById('receiptPaymentType');
+  const refEl = document.getElementById('receiptReferenceNumber');
+  const validationEl = document.getElementById('receiptValidationText');
+  const btn = document.getElementById('sendReceiptMessengerBtn');
+
+  const type = typeEl.value.trim();
+  const ref = refEl.value.trim();
+
+  if (!type || !ref || type !== o.paymentMethod) {
+    updateReceiptConfirmationState();
+    toast(`Please enter the correct ${o.paymentMethod} reference number before sending your receipt.`);
+    return;
+  }
+
+  o.receiptType = type;
+  o.referenceNumber = ref;
+
+  if (!o.receiptDetailsSubmitted) {
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving payment details…'; }
+    try {
+      await savePaymentDetailsToBackend(o, o.referenceNumber);
+      o.receiptDetailsSubmitted = true;
+      o.receiptDetailsSaved = true;
+    } catch (err) {
+      console.error('Payment details recording failed:', err);
+      if (btn) { btn.disabled = false; btn.textContent = '💬 Please Send Receipt'; }
+      validationEl.textContent = 'Payment details could not be saved yet. Please try again.';
+      toast(err.message || 'Payment details could not be recorded. Please try again.');
+      return;
+    }
+  }
+
+  const receiptMessage = [
+    'Hello Tapcard PH, I am sending my payment receipt.',
+    `Order Number: ${o.orderNumber}`,
+    `Customer: ${o.name}`,
+    `Mobile: ${o.phone}`,
+    `Receipt / Payment Type: ${o.receiptType}`,
+    `Payment Method at Checkout: ${o.paymentMethod}`,
+    `Order Total: ${o.total}`,
+    `Reference Number: ${o.referenceNumber}`,
+    'I have attached my payment receipt screenshot. Please verify my payment.'
+  ].join('\n');
+
+  // Botcake Messenger Ref URL links this final website action to the configured
+  // Botcake flow. The customer still attaches the receipt screenshot manually.
+  const botcakeUrl = window.TAPCARD_BOTCAKE_RECEIPT_URL || 'https://m.me/NFCTapCardPh?ref=tapcard_receipt';
+  window.open(botcakeUrl, '_blank', 'noopener,noreferrer');
+
+  o.receiptMessengerOpened = true;
+  window.tcCopyText(receiptMessage, (ok) => {
+    toast(ok
+      ? 'Messenger opened. Receipt message copied — attach your receipt screenshot and send it.'
+      : 'Messenger opened. Please include the order details, reference number, and receipt screenshot.');
+  });
+
+  validationEl.textContent = 'Payment details saved. Messenger is ready — please attach your receipt screenshot and send it.';
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = '💬 Please Send Receipt Again';
+  }
+}
+
+async function finishOrderConfirmation() {
+  if (!lastConfirmedOrder) return;
+
+  // COD: Done immediately closes the confirmation after the universal verification notice.
+  if (lastConfirmedOrder.paymentMethod === 'Cash On Delivery') {
+    closeModal('confirmationModal');
+    return;
+  }
+
+  const o = lastConfirmedOrder;
+  const typeEl = document.getElementById('receiptPaymentType');
+  const refEl = document.getElementById('receiptReferenceNumber');
+  const validationEl = document.getElementById('receiptValidationText');
+  const doneBtn = document.getElementById('confirmDoneBtn');
+  const receiptBox = document.getElementById('messengerReceiptBox');
+  const messengerFinalStep = document.getElementById('messengerFinalStep');
+  const thankYouEl = document.getElementById('confirmationThankYou');
+  const verificationEl = document.getElementById('confirmationVerificationText');
+  const paymentCard = document.getElementById('confirmedPaymentTitle')?.parentElement;
+
+  const type = typeEl.value.trim();
+  const ref = refEl.value.trim();
+  if (!type || !ref || type !== o.paymentMethod) {
+    updateReceiptConfirmationState();
+    toast(`Please enter the correct ${o.paymentMethod} reference number before tapping Done.`);
+    return;
+  }
+
+  o.receiptType = type;
+  o.referenceNumber = ref;
+
+  if (!o.receiptDetailsSubmitted) {
+    doneBtn.disabled = true;
+    doneBtn.textContent = 'Saving…';
+    try {
+      await savePaymentDetailsToBackend(o, o.referenceNumber);
+      o.receiptDetailsSubmitted = true;
+      o.receiptDetailsSaved = true;
+    } catch (err) {
+      console.error('Payment details recording failed:', err);
+      doneBtn.disabled = false;
+      doneBtn.textContent = 'Done';
+      validationEl.textContent = 'Payment details could not be saved yet. Please try again.';
+      toast(err.message || 'Payment details could not be recorded. Please try again.');
+      return;
+    }
+  }
+
+  // Online payment: Done completes the payment-details step, then reveal Thank You + receipt handoff.
+  receiptBox.classList.add('hidden');
+  if (paymentCard) paymentCard.classList.add('hidden');
+  thankYouEl.classList.remove('hidden');
+  verificationEl.classList.remove('hidden');
+  messengerFinalStep.classList.remove('hidden');
+  doneBtn.classList.add('hidden');
+  validationEl.textContent = 'Payment details saved. Please send your receipt screenshot through Messenger.';
+  toast('Payment details saved. Please send your receipt.');
+}
+
+['receiptPaymentType','receiptReferenceNumber'].forEach((id) => {
+  document.addEventListener('input', (e) => {
+    if (e.target && e.target.id === id) updateReceiptConfirmationState();
+  });
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === id) updateReceiptConfirmationState();
+  });
+});
+
+function openQuote(name) {
+  quoteTitle.textContent = name;
+  quoteModal.classList.remove("hidden");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.add("hidden");
+}
+
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(window._toast);
+  window._toast = setTimeout(() => toastEl.classList.remove("show"), 2400);
+}
+const toastEl = document.getElementById("toast");
+
+search.addEventListener("input", renderProducts);
+
+/* Slideshow Logic */
+const slides = document.querySelectorAll(".slide");
+const dotsContainer = document.getElementById("slideDots");
+let currentSlide = 0;
+let slideTimer = null;
+
+if (dotsContainer && slides.length) {
+  dotsContainer.innerHTML = Array.from(slides).map((_, i) =>
+    `<button class="dot ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Slide ${i + 1}"></button>`
+  ).join("");
+}
+
+const dots = document.querySelectorAll(".dot");
+
+function showSlide(index) {
+  if (index < 0) index = slides.length - 1;
+  if (index >= slides.length) index = 0;
+  currentSlide = index;
+  slides.forEach((s, i) => s.classList.toggle("active", i === index));
+  dots.forEach((d, i) => d.classList.toggle("active", i === index));
+}
+
+function nextSlide() {
+  showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  showSlide(currentSlide - 1);
+}
+
+function startSlideshow() {
+  stopSlideshow();
+  slideTimer = setInterval(nextSlide, 3600);
+}
+
+function stopSlideshow() {
+  if (slideTimer) clearInterval(slideTimer);
+}
+
+document.getElementById("slideNext")?.addEventListener("click", () => {
+  nextSlide();
+  startSlideshow();
+});
+
+document.getElementById("slidePrev")?.addEventListener("click", () => {
+  prevSlide();
+  startSlideshow();
+});
+
+dots.forEach(dot => {
+  dot.addEventListener("click", e => {
+    const idx = parseInt(e.target.dataset.index, 10);
+    showSlide(idx);
+    startSlideshow();
+  });
+});
+
+const heroVisual = document.getElementById("heroVisual");
+if (heroVisual) {
+  heroVisual.addEventListener("mouseenter", stopSlideshow);
+  heroVisual.addEventListener("mouseleave", startSlideshow);
+}
+
+startSlideshow();
+loadProducts(); // fetches live pricing from the backend, then renders categories/products
+renderCart();
+</script>
+</body>
+</html>

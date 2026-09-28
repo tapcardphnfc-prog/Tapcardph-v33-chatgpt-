@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owner Dashboard — Tapcard PH NFC</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--navy:#002348;--navy2:#07345f;--gold:#d4af37;--gold2:#f1d979;--cream:#f7f3e8;--paper:#fbfcfd;--ink:#102238;--muted:#66758a;--line:#e1e6eb;--success:#176b4d;--warning:#c27803;--danger:#c92a2a;--shadow:0 18px 55px rgba(0,35,72,.10);--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:#f5f7fa;color:var(--ink);font-family:"DM Sans",sans-serif}button,input,select,textarea{font:inherit}
+.admin-nav{height:72px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,40px);position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.nav-brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.8px;font-weight:700}
+.nav-brand span{background:var(--gold);color:var(--navy);padding:3px 7px;border-radius:6px;font:11px "DM Mono"}
+.nav-meta{display:flex;align-items:center;gap:16px}
+.verified-tag{background:rgba(212,175,55,.18);border:1px solid rgba(212,175,55,.4);color:var(--gold2);padding:6px 12px;border-radius:999px;font:10px "DM Mono";display:flex;align-items:center;gap:6px}
+.logout-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 14px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
+.logout-btn:hover{background:var(--danger);border-color:var(--danger)}
+.main-wrapper{max-width:1440px;margin:28px auto 70px;padding:0 clamp(16px,3vw,40px)}
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 6px 20px rgba(0,35,72,.03)}
+.kpi span{font:10px "DM Mono";text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);display:block;margin-bottom:8px}
+.kpi strong{font-size:30px;color:var(--navy);letter-spacing:-1px}
+.kpi small{font-size:11px;color:var(--muted);display:block;margin-top:6px}
+
+/* Tabs */
+.tab-bar{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.tab-btn{border:0;background:transparent;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s}
+.tab-btn.active{background:var(--navy);color:#fff}
+
+/* Orders Table */
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.panel-head{padding:20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:16px}
+.panel-head h2{margin:0;font-size:18px;color:var(--navy)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;text-align:left}
+th{background:#f9fafb;color:var(--muted);font:10px "DM Mono";text-transform:uppercase;letter-spacing:1px;padding:14px 18px;border-bottom:1px solid var(--line)}
+td{padding:14px 18px;border-bottom:1px solid #edf0f3;vertical-align:middle}
+tr:hover td{background:#fafbfd}
+.badge-status{font:10px "DM Mono";padding:4px 8px;border-radius:999px;font-weight:700;display:inline-block}
+.badge-pending{background:#fff8db;color:#925d04}
+.badge-submitted{background:#e7f5ff;color:#1864ab}
+.badge-verified{background:#ebfbee;color:#2b8a3e}
+.badge-production{background:#f3f0ff;color:#6741d9}
+.badge-completed{background:var(--navy);color:var(--gold)}
+
+/* Order Details Modal */
+.modal{position:fixed;inset:0;background:rgba(0,20,40,.6);backdrop-filter:blur(6px);z-index:200;display:grid;place-items:center;padding:20px}
+.modal-box{width:min(760px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:22px;padding:32px;box-shadow:0 30px 90px rgba(0,0,0,.3);position:relative}
+.close-btn{position:absolute;right:20px;top:18px;border:0;background:transparent;font-size:26px;color:var(--muted);cursor:pointer}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+.box-info{background:var(--cream);border-radius:12px;padding:16px}
+.box-info b{color:var(--navy);font-size:13px;display:block;margin-bottom:8px}
+.box-info p{margin:4px 0;font-size:11px;color:var(--muted)}
+.box-info p strong{color:var(--ink)}
+
+/* Status update actions */
+.status-changer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#f8fafc;padding:16px;border-radius:12px;border:1px solid var(--line);margin:20px 0}
+.status-changer select{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:#fff;font-size:12px;outline:0}
+.btn-save{background:var(--navy);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:700;font-size:12px;cursor:pointer}
+.btn-save:hover{background:var(--navy2)}
+
+/* Admin Chat Box */
+.chat-container{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px}
+.chat-thread{display:grid;gap:10px;max-height:220px;overflow-y:auto;margin-bottom:12px;padding-right:6px}
+.chat-bubble{padding:10px 12px;border-radius:12px;font-size:11px;line-height:1.5;max-width:85%}
+.chat-bubble.customer{background:var(--cream);color:var(--navy);justify-self:start}
+.chat-bubble.owner{background:var(--navy);color:#fff;justify-self:end}
+.chat-meta{font:8px "DM Mono";opacity:.7;display:block;margin-bottom:3px}
+.reply-form{display:flex;gap:8px}
+.reply-form input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;outline:0}
+.reply-form button{background:var(--gold);color:var(--navy);border:0;border-radius:8px;padding:8px 16px;font-weight:700;font-size:11px;cursor:pointer}
+
+/* Order Cards — newest first, scannable at a glance */
+.order-cards{display:grid;gap:12px;padding:18px}
+.order-card-item{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;cursor:pointer;transition:.15s}
+.order-card-item:hover{border-color:var(--gold);box-shadow:0 6px 18px rgba(0,35,72,.06)}
+.order-card-item.is-new::before{content:'NEW';position:absolute}
+.oc-thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;border:1px solid var(--line);background:var(--cream)}
+.oc-thumb-empty{width:52px;height:52px;border-radius:10px;background:var(--cream);display:grid;place-items:center;color:var(--muted);font-size:18px}
+.oc-main b{display:block;font-size:14px;color:var(--navy)}
+.oc-main span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.oc-time{font-size:11px;color:var(--muted);text-align:right;white-space:nowrap}
+.oc-amount{font-size:15px;font-weight:700;color:var(--navy);text-align:right;white-space:nowrap}
+.oc-amount small{display:block;font-size:10px;color:var(--muted);font-weight:400}
+@media(max-width:750px){
+  .order-cards{padding:12px}
+  .order-card-item{grid-template-columns:auto 1fr;grid-template-areas:"thumb main" "thumb status" "amount amount";row-gap:6px}
+  .oc-thumb,.oc-thumb-empty{grid-area:thumb}
+  .oc-main{grid-area:main}
+  .oc-time{grid-area:status;text-align:left}
+  .oc-amount{grid-area:amount;text-align:left;padding-top:8px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center}
+}
+
+/* Lightbox for screenshot review */
+.lightbox{position:fixed;inset:0;background:rgba(0,10,20,.85);z-index:400;display:grid;place-items:center;padding:20px}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:10px}
+.lightbox button{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer}
+
+/* Lock Screen Barrier */
+.lock-screen{position:fixed;inset:0;background:radial-gradient(circle at top center,#07345f 0%,#001428 100%);color:#fff;z-index:999;display:grid;place-items:center;text-align:center;padding:24px}
+.lock-card{width:min(440px,100%);background:rgba(255,255,255,.05);border:1px solid rgba(212,175,55,.3);border-radius:24px;padding:40px 30px;backdrop-filter:blur(10px)}
+.lock-icon{font-size:46px;margin-bottom:16px}
+.hidden{display:none!important}
+
+/* ── TABLET ── */
+@media(max-width:1050px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .details-grid{grid-template-columns:1fr 1fr}
+}
+/* ── MOBILE ── */
+@media(max-width:650px){
+  .admin-nav{padding:0 14px;height:60px}
+  .nav-brand{font-size:11px;letter-spacing:.4px}
+  .verified-tag{display:none}
+  .logout-btn{padding:6px 10px;font-size:10px}
+  .main-wrapper{padding:0 12px;margin:16px auto 80px}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+  .kpi{padding:16px}
+  .kpi strong{font-size:22px}
+  /* Tab bar: horizontally scrollable, no wrap */
+  .tab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;gap:6px;padding-bottom:8px;flex-wrap:nowrap}
+  .tab-bar::-webkit-scrollbar{display:none}
+  .tab-btn{white-space:nowrap;padding:8px 13px;font-size:12px;flex-shrink:0}
+  /* Panel head */
+  .panel-head{flex-direction:column;align-items:flex-start;gap:10px}
+  .panel-head input{width:100%}
+  /* Tables: horizontal scroll on mobile */
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:600px}
+  /* Order modal: full-screen bottom sheet */
+  .modal{padding:0;align-items:flex-end}
+  .modal-box{border-radius:22px 22px 0 0;max-height:95vh;padding:20px 16px;width:100%}
+  .details-grid{grid-template-columns:1fr}
+  .status-changer{flex-direction:column;gap:8px}
+  .status-changer select,.status-changer input,.status-changer .btn-save{width:100%}
+  /* Security grid */
+  #securityGrid{grid-template-columns:1fr}
+  /* Lock screen */
+  .lock-card{padding:28px 18px}
+}
+@media(max-width:400px){
+  .kpi-grid{grid-template-columns:1fr}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="qrious.min.js"></script>
+<script src="config.js?v=10.0"></script>
+
+</head>
+<body>
+
+<!-- Strict Access Lock Screen -->
+<div id="lockScreen" class="lock-screen hidden">
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <p style="font:11px 'DM Mono';color:var(--gold);letter-spacing:1.8px;margin:0 0 10px;text-transform:uppercase">ACCESS RESTRICTED</p>
+    <h1 style="font-size:24px;margin:0 0 12px">Owner Authorization Required</h1>
+    <p style="font-size:13px;color:#cbd5e1;line-height:1.6;margin:0 0 24px">
+      This management dashboard contains sensitive financial, order, and customer records. You must authenticate with the verified Owner Google Authenticator 2FA key.
+    </p>
+    <a href="login.html" style="display:inline-block;background:var(--gold);color:var(--navy);text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;font-size:13px">Log In as Owner →</a>
+  </div>
+</div>
+
+<!-- Owner Navbar -->
+<header class="admin-nav">
+  <div class="nav-brand">
+    <span>NFC</span> TAPCARD PH • OWNER DASHBOARD
+  </div>
+  <div class="nav-meta">
+    <div class="verified-tag">
+      🛡️ 2FA VERIFIED: <span id="ownerEmailDisplay">owner</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+  </div>
+</header>
+
+<main class="main-wrapper">
+  <!-- Analytics KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <span>GROSS SALES REVENUE</span>
+      <strong id="kpiRevenue">₱0.00</strong>
+      <small>Total paid & confirmed volume</small>
+    </div>
+    <div class="kpi">
+      <span>TOTAL ORDERS</span>
+      <strong id="kpiTotalOrders">0</strong>
+      <small>All customer submissions</small>
+    </div>
+    <div class="kpi">
+      <span>PENDING VERIFICATION</span>
+      <strong id="kpiPending" style="color:var(--warning)">0</strong>
+      <small>Needs payment or production approval</small>
+    </div>
+    <div class="kpi">
+      <span>COMPLETED ORDERS</span>
+      <strong id="kpiCompleted" style="color:var(--success)">0</strong>
+      <small>Delivered & successfully finalized</small>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('orders', this)">All Orders & Payments</button>
+    <button class="tab-btn" onclick="switchTab('customers', this)">Customer Directory</button>
+    <button class="tab-btn" onclick="switchTab('products', this)">Product Pricing</button>
+    <button class="tab-btn" onclick="switchTab('security', this)">🛡️ Security & 2FA</button>
+  </div>
+
+  <!-- TAB 1: Orders Table -->
+  <div id="tabOrders" class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Order & Payment Management</h2>
+        <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">Manage full lifecycle from submission to verification and delivery.</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <input id="orderSearch" placeholder="Search order #, customer, or phone" style="border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12px;width:260px" oninput="filterOrders()">
+        <span style="font:10px 'DM Mono';color:var(--muted);letter-spacing:.5px">NEWEST FIRST ↓</span>
+      </div>
+    </div>
+    <div class="order-cards" id="ordersCardsList">
+      <div style="text-align:center;padding:30px;color:var(--muted)">Loading customer orders...</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Customer Directory -->
+  <div id="tabCustomers" class="panel hidden">
+    <div class="panel-head">
+      <div>
+        <h2>Customer Database</h2>
+        <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">All customer contact records, phone numbers, delivery addresses, and lifetime values.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer Name</th>
+            <th>Mobile Number</th>
+            <th>Email</th>
+            <th>Delivery Address</th>
+            <th>Total Orders</th>
+            <th>Lifetime Spend</th>
+          </tr>
+        </thead>
+        <tbody id="customersTableBody">
+          <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">No customer records found.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: Product Pricing -->
+  <div id="tabProducts" class="panel hidden">
+    <div class="panel-head">
+      <div>
+        <h2>Product & Pricing Controls</h2>
+        <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">Adjust live prices per format. Saved changes sync to the storefront on every device immediately.</p>
+      </div>
+      <button id="btnSavePricing" class="btn-save" onclick="saveProductPrices()">Save Pricing Changes</button>
+    </div>
+    <div id="productsSaveStatus" style="font-size:11px;color:var(--muted);margin:-6px 0 12px"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Business Card</th>
+            <th>NFC Standee</th>
+            <th>NFC Sticker / Square</th>
+            <th>Safetag Circle</th>
+            <th>Tag</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="productsTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel-head" style="margin-top:32px">
+      <div>
+        <h2>Delivery Fee</h2>
+        <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">Owner-editable flat fee added to every new order's total. Past orders keep the fee that was active when placed.</p>
+      </div>
+      <button id="btnSaveDelivery" class="btn-save" onclick="saveDeliveryFee()">Save Delivery Fee</button>
+    </div>
+    <div id="deliveryFeeSaveStatus" style="font-size:11px;color:var(--muted);margin:-6px 0 12px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span style="font-size:13px;color:var(--muted)">₱</span>
+      <input id="deliveryFeeInput" type="number" min="0" step="0.01" style="border:1px solid var(--line);border-radius:8px;padding:9px 12px;width:140px;font-weight:700;font-size:14px" value="0">
+    </div>
+
+    <div class="panel-head" style="margin-top:32px">
+      <div>
+        <h2>Payment Accounts</h2>
+        <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">Where customers are told to send GCash/bank payments. Shown at checkout and on tracking pages.</p>
+      </div>
+      <button id="btnSavePaySettings" class="btn-save" onclick="savePaymentSettings()">Save Payment Accounts</button>
+    </div>
+    <div id="paySettingsSaveStatus" style="font-size:11px;color:var(--muted);margin:-6px 0 12px"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th>Account Name</th>
+            <th>Account Number</th>
+          </tr>
+        </thead>
+        <tbody id="paySettingsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- TAB 4: Security & 2FA Panel (inserted before order modal) -->
+<div id="tabSecurity" class="panel hidden" style="margin:0 clamp(16px,3vw,40px) 70px">
+  <div class="panel-head">
+    <div>
+      <h2>🛡️ Owner Security &amp; 2FA Management</h2>
+      <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">View your 2FA QR code, regenerate if you lose your phone, and check Gmail notification status.</p>
+    </div>
+  </div>
+  <div style="padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px" id="securityGrid">
+
+    <!-- 2FA QR Code Panel -->
+    <div style="background:var(--cream);border-radius:16px;padding:24px;text-align:center;border:1px dashed rgba(212,175,55,.5)">
+      <p style="font:10px 'DM Mono';color:var(--gold);letter-spacing:1.8px;text-transform:uppercase;margin:0 0 6px">GOOGLE AUTHENTICATOR</p>
+      <h3 style="margin:0 0 4px;color:var(--navy);font-size:17px">Your 2FA QR Code</h3>
+      <p style="font-size:11px;color:var(--muted);margin:0 0 16px">Scan with Google Authenticator if you get a new phone or need to re-add your account.</p>
+      <canvas id="securityQrCanvas" style="display:block;margin:0 auto 14px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.1)"></canvas>
+      <img id="securityQrImg" alt="Google Authenticator QR Code" style="display:none;margin:0 auto 14px;background:#fff;padding:10px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.1);width:200px;height:200px">
+      <p style="font-size:11px;color:var(--muted);margin:0 0 8px">Secret Key (manual entry):</p>
+      <span id="securitySecretKey" style="display:inline-block;background:#fff;padding:8px 16px;border-radius:8px;border:1px solid var(--line);font:13px 'DM Mono';color:var(--navy);letter-spacing:3px;font-weight:700;word-break:break-all"></span>
+      <p style="font-size:10px;color:var(--muted);margin:12px 0 0">Account: <strong id="securityAccount" style="color:var(--navy)">—</strong></p>
+    </div>
+
+    <!-- Security Info Panel -->
+    <div style="display:grid;gap:16px;align-content:start">
+
+      <!-- Session Info -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px">
+        <b style="font-size:13px;color:var(--navy);display:block;margin-bottom:12px">🔐 Active Session</b>
+        <p style="font-size:11px;margin:5px 0;color:var(--muted)">Logged in as: <strong id="secSessionEmail" style="color:var(--navy)">—</strong></p>
+        <p style="font-size:11px;margin:5px 0;color:var(--muted)">Session started: <strong id="secSessionTime" style="color:var(--navy)">—</strong></p>
+        <p style="font-size:11px;margin:5px 0;color:var(--muted)">2FA Status: <strong style="color:var(--success)">✓ Active &amp; Enforced</strong></p>
+        <button onclick="logout()" style="margin-top:12px;background:var(--danger);color:#fff;border:0;border-radius:8px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;width:100%">Force Logout Now</button>
+      </div>
+
+      <!-- Gmail Notifications -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px">
+        <b style="font-size:13px;color:var(--navy);display:block;margin-bottom:10px">📧 Gmail Notifications</b>
+        <div id="gmailStatusBadge" style="display:inline-block;padding:5px 12px;border-radius:999px;font:10px 'DM Mono';font-weight:700;margin-bottom:10px">Checking...</div>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;margin:0 0 10px">
+          When running the Node.js server, you'll get Gmail alerts for new orders, payment submissions, and customer messages. Requires a Gmail App Password in your <code style="font-size:10px">.env</code> file.
+        </p>
+        <a href="https://myaccount.google.com/security" target="_blank" style="display:block;text-align:center;background:var(--navy);color:var(--gold);text-decoration:none;padding:9px 14px;border-radius:8px;font-size:11px;font-weight:700">Open Google Account Security →</a>
+      </div>
+
+      <!-- Security Actions -->
+      <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px">
+        <b style="font-size:13px;color:var(--navy);display:block;margin-bottom:10px">⚙️ Security Actions</b>
+        <div style="display:grid;gap:8px">
+          <a href="setup-2fa.html" style="display:block;text-align:center;background:var(--cream);color:var(--navy);text-decoration:none;padding:9px 14px;border-radius:8px;font-size:11px;font-weight:700;border:1px solid rgba(212,175,55,.4)">Re-run 2FA Provisioning Wizard</a>
+          <a href="forgot-password.html" style="display:block;text-align:center;background:var(--cream);color:var(--navy);text-decoration:none;padding:9px 14px;border-radius:8px;font-size:11px;font-weight:700;border:1px solid rgba(212,175,55,.4)">Change Owner Password</a>
+          <button onclick="alert('Orders and account data now live in your Postgres database, not this browser — there is no local data to reset. To remove test orders, delete them directly from your database, or from a future admin bulk-delete tool.')" style="background:#fff0f0;color:var(--danger);border:1px solid rgba(184,40,40,.2);border-radius:8px;padding:9px 14px;font-size:11px;font-weight:700;cursor:pointer;width:100%">⚠️ About Resetting Data</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <style>
+    @media(max-width:650px){#securityGrid{grid-template-columns:1fr}}
+  </style>
+</div>
+
+
+<!-- Order Details Modal -->
+<div id="orderModal" class="modal hidden">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeOrderModal()">×</button>
+    <p style="font:10px 'DM Mono';color:var(--gold);letter-spacing:1.8px;margin:0 0 6px;text-transform:uppercase">ORDER INSPECTOR</p>
+    <h2 id="modalOrderTitle" style="margin:0 0 12px;color:var(--navy);font-size:22px">Order #TC-000000</h2>
+
+    <!-- Lifecycle Status Changer -->
+    <div class="status-changer">
+      <span style="font:11px 'DM Mono';font-weight:700">UPDATE STATUS:</span>
+      <select id="modalStatusSelect">
+        <option value="Pending Payment">Pending Payment</option>
+        <option value="Payment Submitted">Payment Submitted</option>
+        <option value="Payment Verified">Payment Verified</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Processing">Processing / In Production</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <input id="modalNoteInput" placeholder="Optional status note for customer..." style="flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px">
+      <button class="btn-save" onclick="applyStatusChange()">Update Status</button>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="details-grid">
+      <div class="box-info">
+        <b>Customer Information</b>
+        <p>Name: <strong id="modalCustName">—</strong></p>
+        <p>Phone: <strong id="modalCustPhone">—</strong></p>
+        <p>Email: <strong id="modalCustEmail">—</strong></p>
+        <p>Delivery Address: <strong id="modalCustAddress">—</strong></p>
+      </div>
+      <div class="box-info">
+        <b>Payment & Financials</b>
+        <p>Method: <strong id="modalPayMethod">—</strong></p>
+        <p>Payment Status: <strong id="modalPayStatus">—</strong></p>
+        <p>Reference #: <strong id="modalPayRef" style="color:var(--navy);font-family:'DM Mono'">—</strong></p>
+        <p>Amount Claimed by Customer: <strong id="modalAmountClaimed">—</strong></p>
+        <p>Subtotal: <strong id="modalSubtotal">—</strong></p>
+        <p>Delivery Fee: <strong id="modalDelivery">—</strong></p>
+        <p>Total Amount: <strong id="modalTotal" style="color:var(--navy);font-size:14px">—</strong></p>
+        <div id="modalShotWrap" class="hidden" style="margin-top:10px">
+          <p style="margin:0 0 6px"><strong>GCash Screenshot:</strong></p>
+          <img id="modalShotImg" src="" alt="Payment screenshot" style="max-width:100%;border-radius:10px;border:1px solid var(--line);cursor:zoom-in" onclick="openAdminLightbox(this.src)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Items List -->
+    <div style="margin:16px 0">
+      <b style="font-size:13px;display:block;margin-bottom:8px">Order Items</b>
+      <div id="modalItemsList" style="border:1px solid var(--line);border-radius:10px;padding:12px"></div>
+    </div>
+
+    <!-- Two-Way Messaging with Customer -->
+    <div class="chat-container">
+      <b style="font-size:13px;display:block;margin-bottom:6px">Customer Conversation Thread</b>
+      <p style="font-size:10px;color:var(--muted);margin:0 0 10px">Replies sent here are immediately visible to the customer on their private tracking link.</p>
+      <div id="modalChatThread" class="chat-thread"></div>
+      <form id="ownerReplyForm" class="reply-form" onsubmit="sendOwnerReply(event)">
+        <input id="ownerReplyInput" placeholder="Reply directly to customer..." required>
+        <button type="submit">Send Reply</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+let allOrders = [];
+let selectedOrder = null;
+
+function peso(n) {
+  return "₱" + Number(n).toLocaleString("en-PH", { minimumFractionDigits: 2 });
+}
+
+// Security Check: Enforce Owner Authentication — verified server-side via the session cookie.
+// The real access control lives in the server's requireOwner middleware; this lock screen is
+// just a UX layer so an unauthenticated visitor sees a clear message instead of empty tables.
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const data = await window.tcApi('/api/admin/analytics');
+    ownerEmail = data.email || ownerEmail;
+    loadDashboard();
+  } catch (err) {
+    document.getElementById('lockScreen').classList.remove('hidden');
+    return;
+  }
+
+  // Owner email for the navbar badge comes from the 2FA QR endpoint (also confirms session)
+  try {
+    const sec = await window.tcApi('/api/admin/security/2fa-qr');
+    ownerEmail = sec.email;
+    document.getElementById('ownerEmailDisplay').textContent = ownerEmail;
+  } catch (err) { /* non-fatal — badge just stays as default text */ }
+});
+
+let ownerEmail = '';
+
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = value == null ? '' : String(value);
+  return div.innerHTML;
+}
+
+function safeImageDataUrl(src) {
+  return typeof src === 'string' && /^data:image\/(png|jpe?g|webp);base64,/.test(src) ? src : '';
+}
+
+function openAdminLightbox(src) {
+  const safeSrc = safeImageDataUrl(src);
+  if (!safeSrc) return;
+  const box = document.createElement('div');
+  box.className = 'lightbox';
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.textContent = '×';
+  close.addEventListener('click', () => box.remove());
+  const img = document.createElement('img');
+  img.src = safeSrc;
+  img.alt = 'Payment screenshot';
+  box.append(close, img);
+  box.addEventListener('click', (e) => { if (e.target === box) box.remove(); });
+  document.body.appendChild(box);
+}
+
+async function logout() {
+  try { await window.tcApi('/api/auth/owner/logout', { method: 'POST' }); } catch (e) {}
+  window.location.href = 'login.html';
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.getElementById('tabOrders').classList.toggle('hidden', tab !== 'orders');
+  document.getElementById('tabCustomers').classList.toggle('hidden', tab !== 'customers');
+  document.getElementById('tabProducts').classList.toggle('hidden', tab !== 'products');
+  document.getElementById('tabSecurity').classList.toggle('hidden', tab !== 'security');
+
+  if (tab === 'customers') renderCustomers();
+  if (tab === 'products') { renderProducts(); renderPaymentSettings(); renderDeliveryFee(); }
+  if (tab === 'security') renderSecurityTab();
+}
+
+async function renderSecurityTab() {
+  let sec;
+  try {
+    sec = await window.tcApi('/api/admin/security/2fa-qr');
+  } catch (err) {
+    document.getElementById('securitySecretKey').textContent = 'Could not load 2FA info: ' + (err.message || 'unknown error');
+    return;
+  }
+
+  // Populate session info
+  document.getElementById('securityAccount').textContent = sec.email || '—';
+  document.getElementById('secSessionEmail').textContent = sec.email || '—';
+  document.getElementById('secSessionTime').textContent = 'This session';
+
+  // Show secret key
+  document.getElementById('securitySecretKey').textContent = sec.totpSecret;
+
+  // Render the QR code the server generated (data URL — never sent to a third party)
+  const qrCanvas = document.getElementById('securityQrCanvas');
+  const qrImg = document.getElementById('securityQrImg');
+  qrCanvas.style.display = 'none';
+  qrImg.style.display = 'block';
+  qrImg.src = sec.qrCodeDataUrl;
+
+  // Check Gmail/server notification status
+  fetch((window.TAPCARD_API_BASE || '') + '/api/health')
+    .then(r => r.json())
+    .then(d => {
+      const badge = document.getElementById('gmailStatusBadge');
+      if (d.gmailEnabled) {
+        badge.textContent = '✓ Gmail Alerts Active';
+        badge.style.cssText += 'background:#ebfbee;color:#2b8a3e;';
+      } else {
+        badge.textContent = '✗ Gmail Not Configured';
+        badge.style.cssText += 'background:#fff0f0;color:#c92a2a;';
+      }
+    })
+    .catch(() => {
+      const badge = document.getElementById('gmailStatusBadge');
+      badge.textContent = '— Could not reach server';
+      badge.style.cssText += 'background:#f1f3f5;color:#66758a;';
+    });
+}
+
+
+async function loadDashboard() {
+  try {
+    allOrders = await window.tcApi('/api/admin/orders');
+  } catch (err) {
+    allOrders = [];
+    console.error('Failed to load orders:', err);
+  }
+  renderKPIs();
+  renderOrderCards(allOrders);
+}
+
+function renderKPIs() {
+  const totalRev = allOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  const pendingCount = allOrders.filter(o => o.status === 'Pending Payment' || o.status === 'Payment Submitted').length;
+  const completedCount = allOrders.filter(o => o.status === 'Completed').length;
+
+  document.getElementById('kpiRevenue').textContent = peso(totalRev);
+  document.getElementById('kpiTotalOrders').textContent = allOrders.length;
+  document.getElementById('kpiPending').textContent = pendingCount;
+  document.getElementById('kpiCompleted').textContent = completedCount;
+}
+
+function statusBadgeClass(status) {
+  if (status === 'Completed') return 'badge-completed';
+  if (status === 'Payment Verified') return 'badge-verified';
+  if (status === 'Payment Submitted') return 'badge-submitted';
+  return 'badge-pending';
+}
+
+// Newest-first order cards: order #, customer, amount, and status all visible without
+// opening anything — screenshot proof shown as a thumbnail right on the card.
+function renderOrderCards(list) {
+  const wrap = document.getElementById('ordersCardsList');
+  if (!list.length) {
+    wrap.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted)">No customer orders recorded yet.</div>`;
+    return;
+  }
+
+  // Orders already come back newest-first from the server (ORDER BY created_at DESC);
+  // keep that order here rather than re-sorting, so "put in the upper" stays true after search too.
+  wrap.innerHTML = list.map(o => {
+    const orderNo = escapeHtml(o.order_number);
+    const customer = escapeHtml(o.customer_name);
+    const phone = escapeHtml(o.customer_phone);
+    const method = escapeHtml(o.payment_method);
+    const ref = o.payment_reference ? ` · Ref: ${escapeHtml(o.payment_reference)}` : '';
+    const status = escapeHtml(o.status);
+    const shot = safeImageDataUrl(o.payment_screenshot);
+    const date = new Date(o.created_at);
+    return `
+      <div class="order-card-item" data-order-number="${orderNo}">
+        ${shot ? `<img class="oc-thumb" src="${shot}" alt="Payment proof">` : `<div class="oc-thumb-empty">🧾</div>`}
+        <div class="oc-main">
+          <b>#${orderNo} · ${customer}</b>
+          <span>${phone} · ${method}${ref}</span>
+          <span class="badge-status ${statusBadgeClass(o.status)}" style="margin-top:6px">${status}</span>
+        </div>
+        <div class="oc-time">${date.toLocaleDateString([], {month:'short', day:'numeric'})}<br>${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+        <div class="oc-amount">${peso(o.total)}${o.payment_amount_claimed != null ? `<small>claimed: ${peso(o.payment_amount_claimed)}</small>` : ''}</div>
+      </div>`;
+  }).join('');
+  wrap.querySelectorAll('.order-card-item').forEach(card => {
+    card.addEventListener('click', () => openOrderModal(card.dataset.orderNumber));
+  });
+}
+
+function filterOrders() {
+  const q = document.getElementById('orderSearch').value.toLowerCase().trim();
+  const filtered = allOrders.filter(o =>
+    o.order_number.toLowerCase().includes(q) ||
+    o.customer_name.toLowerCase().includes(q) ||
+    o.customer_phone.toLowerCase().includes(q) ||
+    (o.payment_reference && o.payment_reference.toLowerCase().includes(q))
+  );
+  renderOrderCards(filtered);
+}
+
+function openOrderModal(orderNumber) {
+  selectedOrder = allOrders.find(o => o.order_number === orderNumber);
+  if (!selectedOrder) return;
+
+  document.getElementById('modalOrderTitle').textContent = `Order #${selectedOrder.order_number}`;
+  document.getElementById('modalStatusSelect').value = selectedOrder.status;
+  document.getElementById('modalNoteInput').value = '';
+
+  document.getElementById('modalCustName').textContent = selectedOrder.customer_name;
+  document.getElementById('modalCustPhone').textContent = selectedOrder.customer_phone;
+  document.getElementById('modalCustEmail').textContent = selectedOrder.customer_email || '—';
+  document.getElementById('modalCustAddress').textContent = selectedOrder.customer_address;
+
+  document.getElementById('modalPayMethod').textContent = selectedOrder.payment_method;
+  document.getElementById('modalPayStatus').textContent = selectedOrder.payment_status || 'Unpaid';
+  document.getElementById('modalPayRef').textContent = selectedOrder.payment_reference || 'None';
+  document.getElementById('modalAmountClaimed').textContent = selectedOrder.payment_amount_claimed != null ? peso(selectedOrder.payment_amount_claimed) : 'Not provided';
+  document.getElementById('modalSubtotal').textContent = peso(selectedOrder.subtotal);
+  document.getElementById('modalDelivery').textContent = peso(selectedOrder.delivery_fee);
+  document.getElementById('modalTotal').textContent = peso(selectedOrder.total);
+
+  const shotWrap = document.getElementById('modalShotWrap');
+  if (selectedOrder.payment_screenshot) {
+    document.getElementById('modalShotImg').src = selectedOrder.payment_screenshot;
+    shotWrap.classList.remove('hidden');
+  } else {
+    shotWrap.classList.add('hidden');
+  }
+
+  document.getElementById('modalItemsList').innerHTML = (selectedOrder.items || []).map(it => `
+    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px">
+      <span>${escapeHtml(it.product_name)}${it.format ? ` <small style="color:var(--muted)">(${escapeHtml(it.format)})</small>` : ''} × ${Number(it.qty) || 0} pcs</span>
+      <b>${peso(it.item_total)}</b>
+    </div>
+  `).join('');
+
+  renderModalChat(selectedOrder.messages || []);
+  document.getElementById('orderModal').classList.remove('hidden');
+}
+
+function closeOrderModal() {
+  document.getElementById('orderModal').classList.add('hidden');
+}
+
+function renderModalChat(messages) {
+  const container = document.getElementById('modalChatThread');
+  if (!messages || !messages.length) {
+    container.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:11px;padding:15px">No messages yet.</div>`;
+    return;
+  }
+  container.innerHTML = messages.map(m => `
+    <div class="chat-bubble ${m.sender_role === 'owner' ? 'owner' : 'customer'}">
+      <span class="chat-meta">${m.sender_role === 'owner' ? '★ Owner' : escapeHtml(m.sender_name)} • ${new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+      <div>${escapeHtml(m.message)}</div>
+    </div>
+  `).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+async function applyStatusChange() {
+  if (!selectedOrder) return;
+  const newStatus = document.getElementById('modalStatusSelect').value;
+  const note = document.getElementById('modalNoteInput').value.trim();
+
+  let payStatus = selectedOrder.payment_status;
+  if (newStatus === 'Payment Verified') payStatus = 'Verified';
+  if (newStatus === 'Completed') payStatus = 'Verified';
+
+  try {
+    await window.tcApi(`/api/admin/orders/${selectedOrder.id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: newStatus, paymentStatus: payStatus, note })
+    });
+  } catch (err) {
+    alert(err.message || 'Failed to update order status.');
+    return;
+  }
+
+  await loadDashboard();
+  selectedOrder = allOrders.find(o => o.order_number === selectedOrder.order_number);
+  openOrderModal(selectedOrder.order_number);
+  alert(`Order #${selectedOrder.order_number} updated to "${newStatus}".`);
+}
+
+async function sendOwnerReply(e) {
+  e.preventDefault();
+  if (!selectedOrder) return;
+  const input = document.getElementById('ownerReplyInput');
+  const txt = input.value.trim();
+  if (!txt) return;
+
+  try {
+    await window.tcApi(`/api/admin/orders/${selectedOrder.id}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ message: txt })
+    });
+  } catch (err) {
+    alert(err.message || 'Failed to send reply.');
+    return;
+  }
+
+  input.value = '';
+  await loadDashboard();
+  selectedOrder = allOrders.find(o => o.order_number === selectedOrder.order_number);
+  renderModalChat(selectedOrder.messages || []);
+}
+
+function renderCustomers() {
+  const custMap = new Map();
+  allOrders.forEach(o => {
+    const key = o.customer_phone || o.customer_name;
+    if (!custMap.has(key)) {
+      custMap.set(key, {
+        name: o.customer_name,
+        phone: o.customer_phone,
+        email: o.customer_email || '—',
+        address: o.customer_address,
+        ordersCount: 0,
+        totalSpent: 0
+      });
+    }
+    const c = custMap.get(key);
+    c.ordersCount += 1;
+    c.totalSpent += (Number(o.total) || 0);
+  });
+
+  const tbody = document.getElementById('customersTableBody');
+  const list = Array.from(custMap.values());
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">No customers yet.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(c => `
+    <tr>
+      <td><strong>${escapeHtml(c.name)}</strong></td>
+      <td style="font-family:'DM Mono'">${escapeHtml(c.phone)}</td>
+      <td>${escapeHtml(c.email)}</td>
+      <td style="max-width:260px;line-height:1.4">${escapeHtml(c.address)}</td>
+      <td><b>${c.ordersCount}</b></td>
+      <td><b>${peso(c.totalSpent)}</b></td>
+    </tr>
+  `).join('');
+}
+
+// The four physical formats a product can be ordered in. Keys must match server.js's
+// PRODUCT_FORMATS exactly.
+const ADMIN_FORMATS = [
+  {key:"business_card", label:"Business Card"},
+  {key:"standee", label:"NFC Standee"},
+  {key:"sticker", label:"NFC Sticker / Square"},
+  {key:"safetag_circle", label:"NFC Safetag Circle"}
+];
+
+let adminProducts = [];
+
+async function renderProducts() {
+  const tbody = document.getElementById('productsTableBody');
+  tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Loading live pricing…</td></tr>`;
+
+  try {
+    adminProducts = await window.tcApi('/api/products');
+  } catch (err) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--danger)">Could not load products.</td></tr>'; console.error(err);
+    return;
+  }
+
+  tbody.innerHTML = adminProducts.map(p => {
+    const hasVariants = p.variants && typeof p.variants === 'object';
+    const priceCell = (formatKey) => {
+      if (!hasVariants) return '<span style="font:11px DM Mono;color:var(--muted)">—</span>';
+      const val = p.variants[formatKey];
+      if (val == null) return '<span style="font:11px DM Mono;color:var(--muted)">—</span>';
+      return `<input type="number" min="0" step="0.01" data-id="${p.id}" data-format="${formatKey}" value="${val}" style="border:1px solid var(--line);border-radius:6px;padding:6px 9px;width:95px;font-weight:700">`;
+    };
+    return `
+    <tr>
+      <td><b>${escapeHtml(p.name)}</b></td>
+      <td>${escapeHtml(p.cat)}</td>
+      <td>${p.price === null ? '<span style="font:11px DM Mono;color:var(--muted)">CONTACT US</span>' : priceCell('business_card')}</td>
+      <td>${p.price === null ? '' : priceCell('standee')}</td>
+      <td>${p.price === null ? '' : priceCell('sticker')}</td>
+      <td>${p.price === null ? '' : priceCell('safetag_circle')}</td>
+      <td><span style="font:9px DM Mono;background:var(--cream);padding:3px 7px;border-radius:4px">${escapeHtml(p.tag)}</span></td>
+      <td><span style="color:var(--success);font:9px DM Mono">ACTIVE</span></td>
+    </tr>
+  `;
+  }).join('');
+}
+
+async function saveProductPrices() {
+  const statusEl = document.getElementById('productsSaveStatus');
+  const inputs = Array.from(document.querySelectorAll('#productsTableBody input'));
+  if (!inputs.length) return;
+
+  // Group changed inputs by product id, since one PATCH call updates all 4 formats
+  // for a product at once.
+  const byProduct = {};
+  inputs.forEach(i => {
+    const id = i.dataset.id;
+    byProduct[id] = byProduct[id] || {};
+    byProduct[id][i.dataset.format] = Number(i.value) || 0;
+  });
+
+  statusEl.textContent = 'Saving…';
+  const saveBtn = document.getElementById('btnSavePricing');
+  if (saveBtn) saveBtn.disabled = true;
+
+  try {
+    const ids = Object.keys(byProduct);
+    for (const id of ids) {
+      await window.tcApi(`/api/admin/products/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ variants: byProduct[id] })
+      });
+    }
+    statusEl.textContent = `Saved — ${ids.length} product${ids.length === 1 ? '' : 's'} updated. Live on the storefront now.`;
+    statusEl.style.color = 'var(--success)';
+    renderProducts();
+  } catch (err) {
+    statusEl.textContent = `Failed to save: ${err.message}`;
+    statusEl.style.color = 'var(--danger)';
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
+  }
+}
+
+async function renderDeliveryFee() {
+  const input = document.getElementById('deliveryFeeInput');
+  try {
+    const data = await window.tcApi('/api/settings/delivery-fee');
+    input.value = data.deliveryFee;
+  } catch (err) {
+    document.getElementById('deliveryFeeSaveStatus').textContent = `Couldn't load: ${err.message}`;
+    document.getElementById('deliveryFeeSaveStatus').style.color = 'var(--danger)';
+  }
+}
+
+async function saveDeliveryFee() {
+  const statusEl = document.getElementById('deliveryFeeSaveStatus');
+  const input = document.getElementById('deliveryFeeInput');
+  const fee = Number(input.value);
+  if (!Number.isFinite(fee) || fee < 0) {
+    statusEl.textContent = 'Enter a valid amount ≥ 0.';
+    statusEl.style.color = 'var(--danger)';
+    return;
+  }
+
+  statusEl.textContent = 'Saving…';
+  const saveBtn = document.getElementById('btnSaveDelivery');
+  if (saveBtn) saveBtn.disabled = true;
+  try {
+    await window.tcApi('/api/admin/settings/delivery-fee', {
+      method: 'PATCH',
+      body: JSON.stringify({ deliveryFee: fee })
+    });
+    statusEl.textContent = `Saved — new orders will now include a ${peso(fee)} delivery fee.`;
+    statusEl.style.color = 'var(--success)';
+  } catch (err) {
+    statusEl.textContent = `Failed to save: ${err.message}`;
+    statusEl.style.color = 'var(--danger)';
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
+  }
+}
+
+async function renderPaymentSettings() {
+  const tbody = document.getElementById('paySettingsTableBody');
+  tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted)">Loading…</td></tr>`;
+
+  let settings;
+  try {
+    settings = await window.tcApi('/api/payment-settings');
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--danger)">Couldn't load: ${err.message}</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = settings.map(s => `
+    <tr>
+      <td><b>${s.channel}</b></td>
+      <td><input type="text" data-channel="${s.channel}" data-field="accountName" value="${escapeHtml(s.account_name || '')}" placeholder="Account name" style="border:1px solid var(--line);border-radius:6px;padding:6px 9px;width:160px"></td>
+      <td><input type="text" data-channel="${s.channel}" data-field="accountNumber" value="${escapeHtml(s.account_number || '')}" placeholder="Account number" style="border:1px solid var(--line);border-radius:6px;padding:6px 9px;width:180px;font-family:'DM Mono';font-weight:700"></td>
+    </tr>
+  `).join('');
+}
+
+async function savePaymentSettings() {
+  const statusEl = document.getElementById('paySettingsSaveStatus');
+  const rows = Array.from(document.querySelectorAll('#paySettingsTableBody tr'));
+  if (!rows.length) return;
+
+  statusEl.textContent = 'Saving…';
+  const saveBtn = document.getElementById('btnSavePaySettings');
+  if (saveBtn) saveBtn.disabled = true;
+
+  try {
+    for (const row of rows) {
+      const nameInput = row.querySelector('[data-field="accountName"]');
+      const numInput = row.querySelector('[data-field="accountNumber"]');
+      const channel = numInput.dataset.channel;
+      await window.tcApi(`/api/admin/payment-settings/${encodeURIComponent(channel)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ accountName: nameInput.value, accountNumber: numInput.value })
+      });
+    }
+    statusEl.textContent = 'Saved — customers will see these accounts immediately.';
+    statusEl.style.color = 'var(--success)';
+    renderPaymentSettings();
+  } catch (err) {
+    statusEl.textContent = `Failed to save: ${err.message}`;
+    statusEl.style.color = 'var(--danger)';
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

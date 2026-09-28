@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owner 2FA Setup — Tapcard PH NFC</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--navy:#002348;--navy2:#07345f;--gold:#d4af37;--gold2:#f1d979;--cream:#f7f3e8;--paper:#fbfcfd;--ink:#102238;--muted:#66758a;--line:#e1e6eb;--success:#176b4d;--danger:#b82828;--shadow:0 18px 55px rgba(0,35,72,.12);--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top center,#07345f 0%,#001a35 100%);color:var(--ink);font-family:"DM Sans",sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px}
+.setup-card{width:min(520px,100%);background:#fff;border-radius:22px;padding:36px 32px;box-shadow:var(--shadow);border:1px solid rgba(212,175,55,.3)}
+@media(max-width:480px){body{padding:0;align-items:flex-end}.setup-card{border-radius:22px 22px 0 0;padding:28px 18px;width:100%;max-height:96vh;overflow-y:auto}}
+@media(max-width:360px){h1{font-size:22px}.qr-box canvas{width:160px!important;height:160px!important}}
+.eyebrow{font:10px "DM Mono";letter-spacing:1.8px;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+h1{margin:0 0 10px;font-size:26px;color:var(--navy);letter-spacing:-.8px}
+p.sub{margin:0 0 24px;color:var(--muted);font-size:13px;line-height:1.55}
+.step-indicator{display:flex;gap:8px;margin-bottom:24px}
+.step-pill{flex:1;height:6px;border-radius:999px;background:var(--line);transition:.3s}
+.step-pill.active{background:var(--gold)}
+.step-pill.done{background:var(--success)}
+label{display:grid;gap:6px;margin-bottom:16px}
+label span{font:10px "DM Mono";text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.input-wrap{position:relative;display:flex;align-items:center}
+input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;outline:0;font-family:inherit;color:var(--ink)}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.15)}
+.toggle-btn{position:absolute;right:10px;background:transparent;border:0;cursor:pointer;color:var(--muted);font-size:14px;padding:6px}
+.toggle-btn:hover{color:var(--navy)}
+.primary{width:100%;background:var(--gold);color:var(--navy);border:0;border-radius:10px;padding:13px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+.primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.qr-box{background:var(--cream);border-radius:14px;padding:20px;text-align:center;margin:18px 0;border:1px dashed rgba(212,175,55,.5)}
+.qr-box canvas{display:block;margin:0 auto 12px;background:#fff;padding:8px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+.secret-key{display:inline-block;background:#fff;padding:6px 12px;border-radius:6px;border:1px solid var(--line);font:12px "DM Mono";color:var(--navy);letter-spacing:2px;font-weight:700}
+.notice{background:#fdf5e2;border-left:4px solid var(--gold);padding:12px 14px;font-size:11px;color:#7a5a0c;line-height:1.5;margin-bottom:18px;border-radius:0 8px 8px 0}
+.alert-error{background:#fdf0f0;border-left:4px solid var(--danger);padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:16px;border-radius:0 8px 8px 0}
+.alert-success{background:#eef8f3;border-left:4px solid var(--success);padding:10px 14px;font-size:12px;color:var(--success);margin-bottom:16px;border-radius:0 8px 8px 0}
+.hidden{display:none!important}
+.code-input{letter-spacing:8px;font-size:24px;text-align:center;font-weight:700;font-family:"DM Mono",monospace}
+</style>
+<!-- Robust QR code support with CDN and local fallback -->
+<script src="qrious.min.js"></script>
+<script src="config.js?v=10.0"></script>
+<script>
+// Resilient setup-page API helper: protects Owner 2FA setup if a stale or
+// unavailable cached config.js did not define tcApi.
+if (typeof window.tcApi !== 'function') {
+  window.tcApi = async function (path, options = {}) {
+    const base = window.TAPCARD_API_BASE || 'https://tapcard-ph-nfc-backend.onrender.com';
+    const res = await fetch(base + path, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      ...options
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) {
+      const err = new Error((data && data.error) || `Request failed (${res.status})`);
+      err.status = res.status;
+      err.data = data;
+      throw err;
+    }
+    return data;
+  };
+}
+</script>
+</head>
+<body>
+
+<div class="setup-card">
+  <p class="eyebrow">SECURITY PROVISIONING</p>
+  <h1>Owner 2FA Configuration</h1>
+  <p class="sub">Set up your authorized Owner identity and register your Google Authenticator app. You will be the only person with access to the business dashboard.</p>
+
+  <div class="step-indicator">
+    <div id="pill1" class="step-pill active"></div>
+    <div id="pill2" class="step-pill"></div>
+    <div id="pill3" class="step-pill"></div>
+  </div>
+
+  <div id="errorMessage" class="alert-error hidden"></div>
+  <div id="successMessage" class="alert-success hidden"></div>
+
+  <!-- STEP 1: Owner Credentials -->
+  <div id="step1">
+    <div class="notice">
+      🔒 <b>Owner Sole-Authority Rule</b>: These credentials will become the permanent master identity for this deployment. Keep your password safe.
+    </div>
+
+    <form id="ownerCredForm">
+      <label>
+        <span>Owner Email Address</span>
+        <input id="ownerEmail" type="email" required placeholder="owner@tapcardph.com" autocomplete="email">
+      </label>
+
+      <label>
+        <span>One-Time Setup Key</span>
+        <input id="ownerSetupKey" type="password" required placeholder="Backend OWNER_SETUP_KEY" autocomplete="off">
+        <small style="color:#66758a;display:block;margin-top:5px">Use the one-time key configured in your backend environment. Never share it publicly.</small>
+      </label>
+
+      <label>
+        <span>Master Password (min 8 characters)</span>
+        <div class="input-wrap">
+          <input id="ownerPassword" type="password" required minlength="8" placeholder="Enter strong password" autocomplete="new-password">
+          <button type="button" class="toggle-btn" onclick="togglePass('ownerPassword', this)">👁</button>
+        </div>
+      </label>
+
+      <label>
+        <span>Confirm Password</span>
+        <div class="input-wrap">
+          <input id="confirmPassword" type="password" required minlength="8" placeholder="Confirm password" autocomplete="new-password">
+          <button type="button" class="toggle-btn" onclick="togglePass('confirmPassword', this)">👁</button>
+        </div>
+      </label>
+
+      <button type="submit" class="primary">Generate 2FA Security Key →</button>
+    </form>
+  </div>
+
+  <!-- STEP 2: Scan QR with Google Authenticator -->
+  <div id="step2" class="hidden">
+    <div class="notice">
+      📱 Open <b>Google Authenticator</b> or your 2FA app, tap <b>+</b> and scan the QR code below. If you cannot scan, tap <b>Copy Key</b> to paste it.
+    </div>
+
+    <div class="qr-box">
+      <div style="display:flex;justify-content:center;margin-bottom:12px">
+        <canvas id="qrCanvas" style="display:block;margin:0 auto;background:#fff;padding:8px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.08)"></canvas>
+        <img id="qrImg" alt="Google Authenticator QR Code" style="display:none;margin:0 auto;background:#fff;padding:8px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.08);width:190px;height:190px">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap">
+        <span class="secret-key" id="displaySecretKey">---- ---- ---- ----</span>
+        <button type="button" onclick="copySecretKey()" style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;font-weight:600;color:var(--navy)">📋 Copy Key</button>
+      </div>
+      <p style="font-size:10px;color:var(--muted);margin:8px 0 0">Account: <b id="displayAccount">—</b></p>
+    </div>
+
+    <form id="verifyTotpForm">
+      <label>
+        <span>Enter 6-Digit Code From Google Authenticator</span>
+        <input id="totpCode" class="code-input" type="text" maxlength="6" pattern="[0-9]{6}" required placeholder="000000" autocomplete="one-time-code">
+      </label>
+
+      <button type="submit" class="primary">Verify & Activate Owner 2FA →</button>
+      <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)">Code not matching? Make sure your phone's clock is set to automatic/network time, then try again.</p>
+    </form>
+  </div>
+
+  <!-- STEP 3: Setup Completed -->
+  <div id="step3" class="hidden">
+    <div class="alert-success" style="padding:18px;margin-bottom:20px">
+      <b style="display:block;font-size:15px;margin-bottom:6px">✓ Owner Security Successfully Activated!</b>
+      Google Authenticator 2FA is now permanently enforced. No one can access the backend without both your master password and your live 6-digit phone code.
+    </div>
+
+    <!-- Gmail Notification Setup Guide -->
+    <div style="background:#fff8db;border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:18px">
+      <b style="font-size:12px;display:block;color:var(--navy);margin-bottom:10px">📧 STEP: Enable Gmail Order Notifications</b>
+      <p style="font-size:11px;color:#6b4d00;margin:0 0 10px;line-height:1.65">
+        Tapcard PH NFC can send you real-time Gmail alerts for every new order, payment submission, and customer message.
+        To activate, you need a <b>Gmail App Password</b> — a one-time code Google generates so this app can send emails on your behalf safely.
+      </p>
+      <ol style="font-size:11px;color:#5a4200;margin:0 0 10px;padding-left:18px;line-height:2">
+        <li>Go to <a href="https://myaccount.google.com/security" target="_blank" style="color:var(--navy);font-weight:700">myaccount.google.com/security</a></li>
+        <li>Enable <b>2-Step Verification</b> if not already on</li>
+        <li>Search for <b>"App Passwords"</b> in the Google Account search bar</li>
+        <li>Under App name, type: <span style="font-family:'DM Mono';background:#fff;padding:2px 6px;border-radius:4px;font-size:10px">Tapcard PH NFC</span></li>
+        <li>Click <b>Create</b> — Google shows you a 16-character password</li>
+        <li>Copy it and open <code style="font-size:10px">.env</code> in your project folder</li>
+        <li>Set <code style="font-size:10px">GMAIL_USER=your@gmail.com</code> and <code style="font-size:10px">GMAIL_PASS=xxxx xxxx xxxx xxxx</code></li>
+        <li>Restart Node.js: <code style="font-size:10px">node server.js</code></li>
+      </ol>
+      <p style="font-size:10px;color:var(--muted);margin:0">See <code>.env.example</code> in your project folder for a full template.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <a href="login.html" class="primary" style="display:block;text-align:center;text-decoration:none">Proceed to Owner Login →</a>
+      <a href="admin.html" class="primary" style="display:block;text-align:center;text-decoration:none;background:var(--navy);color:#fff">Go to Dashboard →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let tempOwner = { email: '', password: '' };
+
+function togglePass(id, btn) {
+  const el = document.getElementById(id);
+  if (el.type === 'password') {
+    el.type = 'text';
+    btn.textContent = '🔒';
+  } else {
+    el.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMessage');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+function clearError() {
+  document.getElementById('errorMessage').classList.add('hidden');
+}
+
+// Check if owner is already configured (server-side check — the real source of truth)
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const status = await window.tcApi('/api/auth/owner/status');
+    if (status.configured) {
+      showError("An Owner account is already configured. To manage, log in with your credentials.");
+      document.getElementById('ownerCredForm').querySelector('button').disabled = true;
+    }
+  } catch (e) {
+    showError("Could not reach the server to check setup status. Make sure the backend is running.");
+  }
+});
+
+// Step 1: Submit Credentials — the server creates the account, generates the TOTP secret,
+// and returns a QR code image (rendered server-side, so the secret never touches a third party)
+document.getElementById('ownerCredForm').onsubmit = async (e) => {
+  e.preventDefault();
+  clearError();
+
+  const email = document.getElementById('ownerEmail').value.trim().toLowerCase();
+  const setupKey = document.getElementById('ownerSetupKey').value;
+  const pass = document.getElementById('ownerPassword').value;
+  const confirm = document.getElementById('confirmPassword').value;
+
+  if (pass !== confirm) {
+    showError("Passwords do not match. Please re-enter.");
+    return;
+  }
+  if (pass.length < 8) {
+    showError("Password must be at least 8 characters long.");
+    return;
+  }
+
+  let result;
+  try {
+    result = await window.tcApi('/api/auth/owner/setup', {
+      method: 'POST',
+      body: JSON.stringify({ email, password: pass, setupKey })
+    });
+  } catch (err) {
+    showError(err.message || 'Failed to create the Owner account.');
+    return;
+  }
+
+  tempOwner.email = email;
+  tempOwner.password = pass;
+
+  // Render the QR code the server generated (data URL — no secret sent to any third party)
+  const qrImg = document.getElementById('qrImg');
+  const qrCanvas = document.getElementById('qrCanvas');
+  qrImg.src = result.qrCodeDataUrl;
+  qrCanvas.style.display = 'none';
+  qrImg.style.display = 'block';
+
+  document.getElementById('displaySecretKey').textContent = result.totpSecret;
+  document.getElementById('displayAccount').textContent = email;
+
+  // Move to Step 2
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.remove('hidden');
+  document.getElementById('pill1').classList.add('done');
+  document.getElementById('pill2').classList.add('active');
+  document.getElementById('totpCode').focus();
+};
+
+function copySecretKey() {
+  const key = document.getElementById('displaySecretKey').textContent.trim();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(key).then(() => {
+      alert("✓ Secret key copied: " + key + "\n\nIn Google Authenticator:\n1. Tap (+)\n2. Select 'Enter a setup key'\n3. Paste the key\n4. Ensure 'Time based' is selected");
+    }).catch(() => {
+      prompt("Copy your secret key:", key);
+    });
+  } else {
+    prompt("Copy your secret key:", key);
+  }
+}
+
+function completeSetupUI() {
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step3').classList.remove('hidden');
+  document.getElementById('pill2').classList.add('done');
+  document.getElementById('pill3').classList.add('done');
+}
+
+// Step 2: Verify TOTP code against the server, then log straight in (server sets the session cookie)
+document.getElementById('verifyTotpForm').onsubmit = async (e) => {
+  e.preventDefault();
+  clearError();
+
+  const code = document.getElementById('totpCode').value.trim();
+
+  try {
+    await window.tcApi('/api/auth/owner/setup/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token: code })
+    });
+  } catch (err) {
+    showError(err.message || 'Invalid 6-digit code. Please verify your phone time is set to Automatic and try again.');
+    return;
+  }
+
+  // 2FA is now enabled server-side — log in immediately so the owner lands in the dashboard
+  try {
+    await window.tcApi('/api/auth/owner/login', {
+      method: 'POST',
+      body: JSON.stringify({ email: tempOwner.email, password: tempOwner.password })
+    });
+    await window.tcApi('/api/auth/owner/verify-2fa', {
+      method: 'POST',
+      body: JSON.stringify({ email: tempOwner.email, password: tempOwner.password, totpCode: code })
+    });
+  } catch (err) {
+    // 2FA is enabled either way; owner can just log in manually from here
+  }
+
+  completeSetupUI();
+};
+
+</script>
+</body>
+</html>
